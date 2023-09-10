@@ -19,8 +19,11 @@ dependencies {
     // Use JUnit test framework.
     testImplementation("junit:junit:4.13.2")
 
-    // This dependency is used by the application.
-    implementation("com.google.guava:guava:32.1.1-jre")
+    // https://mvnrepository.com/artifact/com.formdev/flatlaf
+    implementation("com.formdev:flatlaf:3.1.1")
+    // https://mvnrepository.com/artifact/com.miglayout/miglayout-swing
+    implementation("com.miglayout:miglayout-swing:11.1")
+
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
