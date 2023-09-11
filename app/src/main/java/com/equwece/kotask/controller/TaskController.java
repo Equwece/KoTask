@@ -3,7 +3,7 @@ package com.equwece.kotask.controller;
 import java.util.List;
 
 import com.equwece.kotask.data.TaskDao;
-import com.equwece.kotask.view.TaskItem;
+import com.equwece.kotask.data.TaskItem;
 
 final public class TaskController {
     final private TaskDao taskDao;

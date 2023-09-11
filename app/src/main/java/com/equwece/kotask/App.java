@@ -3,9 +3,21 @@
  */
 package com.equwece.kotask;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.jdbi.v3.core.Jdbi;
+
+import com.equwece.kotask.data.SqliteTaskDao;
+import com.equwece.kotask.data.TaskDao;
+import com.equwece.kotask.data.TaskItem;
+import com.equwece.kotask.data.TestTaskDao;
 import com.equwece.kotask.view.AppWindow;
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLightLaf;
 
 public class App {
     /**
@@ -13,19 +25,67 @@ public class App {
      * this method should be invoked from the
      * event-dispatching thread.
      */
-    private static void createAndShowGUI() {
+    private static void createAndShowGUI(AppEnv appEnv) {
         // Create and set up the window.
-        AppWindow appWindow = new AppWindow();
+        AppWindow appWindow = new AppWindow(appEnv);
         appWindow.run();
     }
 
-    public static void main(String[] args) {
+    public static Path setupAppDir() throws IOException {
+        String userHome = System.getProperty("user.home");
+        if (userHome == null) {
+            throw new IOException("Can't get user's home directory");
+        }
+        Path appDirPath = Paths.get(userHome, ".KoTask");
+        Files.createDirectories(appDirPath);
+        return appDirPath;
+    }
+
+    public static void setupDB(Path appDirPath, Jdbi jdbi) {
+        if (!appDirPath.resolve("cache.db").toFile().exists()) {
+            jdbi.withHandle(handle -> {
+                handle.execute(
+                        "CREATE TABLE \"task\" ("
+                                + "\"head_line\"	TEXT NOT NULL,"
+                                + "\"description\"	TEXT,"
+                                + "\"id\"	TEXT NOT NULL,"
+                                + "PRIMARY KEY(\"id\"));");
+                return null;
+            });
+
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+
+        Path appDirPath = setupAppDir();
+
+        Jdbi jdbi = Jdbi.create(String.format("jdbc:sqlite:%s", appDirPath.resolve("cache.db").toString()));
+
+        jdbi.registerRowMapper(TaskItem.class,
+                (rs, ctx) -> {
+                    String maybeDescription = rs.getString("description");
+                    Optional<String> description;
+                    if (maybeDescription == null) {
+                        description = Optional.empty();
+                    } else {
+                        description = Optional.of(maybeDescription);
+                    }
+                    return new TaskItem(rs.getString("head_line"), UUID.fromString(rs.getString("id")),
+                            description);
+                });
+
+        setupDB(appDirPath, jdbi);
+
+        TaskDao testTaskDao = new SqliteTaskDao(jdbi);
+        AppEnv appEnv = new AppEnv(testTaskDao);
+
         // Schedule a job for the event-dispatching thread:
         // creating and showing this application's GUI.
         FlatDarkLaf.setup();
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI();
+                createAndShowGUI(appEnv);
             }
         });
     }

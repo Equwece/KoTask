@@ -7,6 +7,7 @@ import javax.swing.ListSelectionModel;
 
 import com.equwece.kotask.controller.TaskController;
 import com.equwece.kotask.data.TaskDao;
+import com.equwece.kotask.data.TaskItem;
 
 public class TaskList extends JList<TaskItemComponent> {
     final private TaskController taskController;

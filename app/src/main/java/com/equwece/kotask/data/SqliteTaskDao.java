@@ -1,19 +1,27 @@
 package com.equwece.kotask.data;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-final public class TestTaskDao implements TaskDao {
+import org.jdbi.v3.core.Jdbi;
+
+final public class SqliteTaskDao implements TaskDao {
+    final private Jdbi jdbi;
+
+    public SqliteTaskDao(Jdbi jdbi) {
+        this.jdbi = jdbi;
+    }
 
     @Override
     public List<TaskItem> getAll() {
-        List<TaskItem> resultItems = Arrays.asList(
-                new TaskItem("Task 1"),
-                new TaskItem("Task 2"),
-                new TaskItem("Task 3"));
-        return resultItems;
+        List<TaskItem> tasks = this.jdbi.withHandle(handle -> {
+            return handle.createQuery(
+                    "SELECT * FROM \"task\"")
+                    .mapTo(TaskItem.class)
+                    .list();
+        });
+        return tasks;
     }
 
     @Override

@@ -23,6 +23,12 @@ dependencies {
     implementation("com.formdev:flatlaf:3.1.1")
     // https://mvnrepository.com/artifact/com.miglayout/miglayout-swing
     implementation("com.miglayout:miglayout-swing:11.1")
+    // https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
+    implementation("org.xerial:sqlite-jdbc:3.43.0.0")
+
+    implementation("org.jdbi:jdbi3-core:3.41.0")
+
+    implementation("org.slf4j:slf4j-simple:2.0.7")
 
 }
 

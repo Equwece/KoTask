@@ -3,14 +3,17 @@ package com.equwece.kotask.view;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import com.equwece.kotask.data.TaskDao;
-import com.equwece.kotask.data.TestTaskDao;
+import com.equwece.kotask.AppEnv;
 
 import net.miginfocom.swing.MigLayout;
 
 public class AppWindow extends JFrame {
-    public AppWindow() {
+
+    final private AppEnv appEnv;
+
+    public AppWindow(AppEnv appEnv) {
         super("KoTask");
+        this.appEnv = appEnv;
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel contentPane = new JPanel();
 
@@ -18,8 +21,7 @@ public class AppWindow extends JFrame {
 
         contentPane.setLayout(mainLayout);
 
-        TaskDao taskDao = new TestTaskDao();
-        TaskList taskList = new TaskList(taskDao);
+        TaskList taskList = new TaskList(this.appEnv.getTaskDao());
 
         contentPane.add(taskList, "grow");
 
