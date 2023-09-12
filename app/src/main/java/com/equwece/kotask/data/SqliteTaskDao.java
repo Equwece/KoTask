@@ -58,8 +58,8 @@ final public class SqliteTaskDao implements TaskDao {
         this.jdbi.withHandle(handle -> {
             return handle.createUpdate(
                     "UPDATE \"task\" "
-                            + "SET head_line = :head_line, description = :description status = :status"
-                            + "WHERE id = :id")
+                            + "SET head_line = :head_line, description = :description, status = :status"
+                            + " WHERE id = :id")
                     .bind("head_line", item.getHeadLine())
                     .bind("description", item.getDescription().orElse(null))
                     .bind("id", id)

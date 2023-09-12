@@ -32,10 +32,10 @@ public class TaskEditorPanel extends TaskCreatorPanel {
     public TaskEditorPanel setupPanelWidgets() {
         TaskController taskController = new TaskController(this.getAppEnv());
         JTextField headLineInput = new JTextField();
-        headLineInput.setText(this.getSelectedItem().getHeadLine()); 
+        headLineInput.setText(this.getSelectedItem().getHeadLine());
 
         JTextArea descriptionInput = new JTextArea();
-        descriptionInput.setText(this.getSelectedItem().getDescription().orElse("")); 
+        descriptionInput.setText(this.getSelectedItem().getDescription().orElse(""));
         descriptionInput.setRows(7);
 
         JScrollPane scrollPane = new JScrollPane(descriptionInput);

@@ -46,7 +46,8 @@ public class TaskList extends JList<TaskItemComponent> {
                         if (e.getClickCount() == 2) {
                             TaskItemComponent selectedItem = this.getSelectedComponent(e);
                             new TaskEditorPanel("Edit task", appEnv, selectedItem.getTaskItem())
-                                    .setupPanelWidgets().run();
+                                    .setupPanelWidgets()
+                                    .run();
                         }
                     }
 
