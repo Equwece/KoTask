@@ -46,8 +46,10 @@ final public class SqliteTaskDao implements TaskDao {
 
     @Override
     public void delete(UUID id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+        this.jdbi.withHandle(handle -> {
+            return handle.createUpdate("DELETE FROM \"task\" WHERE id = :id")
+                    .bind("id", id).execute();
+        });
     }
 
     @Override

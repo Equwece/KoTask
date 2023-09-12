@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
 import com.equwece.kotask.AppEnv;
+import com.equwece.kotask.controller.FetchTaskListWorker;
 import com.equwece.kotask.controller.TaskController;
 import com.equwece.kotask.data.TaskItem;
 
@@ -38,7 +39,6 @@ public class TaskCreatorPanel extends JFrame {
         JPanel buttonContainer = new JPanel();
         JButton saveTask = new JButton("Save");
         saveTask.addActionListener(event -> {
-            TaskCreatorPanel creatorPanelAlias = this;
             new SwingWorker<Void, Void>() {
                 @Override
                 protected Void doInBackground() throws Exception {
@@ -56,12 +56,17 @@ public class TaskCreatorPanel extends JFrame {
 
                         @Override
                         protected void done() {
-                            try {
-                                appEnv.getAppWindow().getTaskList().updateTaskList(get());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            creatorPanelAlias.dispose();
+                            new FetchTaskListWorker(taskController) {
+                                @Override
+                                protected void done() {
+                                    try {
+                                        appEnv.getAppWindow().getTaskList().updateTaskList(get());
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    TaskCreatorPanel.this.dispose();
+                                }
+                            }.execute();
                         }
                     }.execute();
                 }

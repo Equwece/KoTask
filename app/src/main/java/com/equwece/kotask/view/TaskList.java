@@ -1,5 +1,7 @@
 package com.equwece.kotask.view;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.JList;
@@ -21,6 +23,29 @@ public class TaskList extends JList<TaskItemComponent> {
         this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         this.setLayoutOrientation(JList.VERTICAL);
         this.setVisibleRowCount(-1);
+
+        this.addMouseListener(
+                new MouseAdapter() {
+                    public void mousePressed(MouseEvent e) {
+                        if (e.isPopupTrigger()) {
+                            showPopup(e);
+                        }
+                    }
+
+                    public void mouseReleased(MouseEvent e) {
+                        if (e.isPopupTrigger()) {
+                            showPopup(e);
+                        }
+                    }
+
+                    private void showPopup(MouseEvent e) {
+                        TaskItemComponent selectedComponent = TaskList.this.getModel()
+                                .getElementAt(TaskList.this.locationToIndex(e.getPoint()));
+                        TaskContextMenu popup = new TaskContextMenu(appEnv, selectedComponent);
+                        popup.show(e.getComponent(),
+                                e.getX(), e.getY());
+                    }
+                });
     }
 
     public void updateTaskList(List<TaskItem> newTaskList) {

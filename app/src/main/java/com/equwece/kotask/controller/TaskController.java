@@ -23,4 +23,8 @@ final public class TaskController {
         TaskItem newItem = new TaskItem(headLine, UUID.randomUUID(), Optional.of(description));
         this.appEnv.getTaskDao().create(newItem);
     }
+
+    public void deleteItem(UUID itemId) {
+        this.appEnv.getTaskDao().delete(itemId);
+    }
 }
