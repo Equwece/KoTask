@@ -15,7 +15,7 @@ import org.jdbi.v3.core.Jdbi;
 import com.equwece.kotask.data.SqliteTaskDao;
 import com.equwece.kotask.data.TaskDao;
 import com.equwece.kotask.data.TaskItem;
-import com.equwece.kotask.data.TestTaskDao;
+import com.equwece.kotask.data.TaskItem.TaskStatus;
 import com.equwece.kotask.view.AppWindow;
 import com.formdev.flatlaf.FlatDarkLaf;
 
@@ -49,6 +49,8 @@ public class App {
                                 + "\"head_line\"	TEXT NOT NULL,"
                                 + "\"description\"	TEXT,"
                                 + "\"id\"	TEXT NOT NULL,"
+                                + "\"status\" TEXT NOT NULL DEFAULT 'ACTIVE',"
+                                + "CONSTRAINT \"status_check\" CHECK(status IN ('ACTIVE','DONE')),"
                                 + "PRIMARY KEY(\"id\"));");
                 return null;
             });
@@ -65,6 +67,16 @@ public class App {
         jdbi.registerRowMapper(TaskItem.class,
                 (rs, ctx) -> {
                     String maybeDescription = rs.getString("description");
+                    String taskStatusStr = rs.getString("status");
+                    TaskStatus taskStatus;
+                    switch (taskStatusStr) {
+                        case "DONE":
+                            taskStatus = TaskStatus.DONE;
+                            break;
+                        default:
+                            taskStatus = TaskStatus.ACTIVE;
+                            break;
+                    }
                     Optional<String> description;
                     if (maybeDescription == null) {
                         description = Optional.empty();
@@ -72,7 +84,7 @@ public class App {
                         description = Optional.of(maybeDescription);
                     }
                     return new TaskItem(rs.getString("head_line"), UUID.fromString(rs.getString("id")),
-                            description);
+                            description, taskStatus);
                 });
 
         setupDB(appDirPath, jdbi);

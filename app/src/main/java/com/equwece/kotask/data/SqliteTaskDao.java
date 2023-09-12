@@ -34,11 +34,12 @@ final public class SqliteTaskDao implements TaskDao {
     public UUID create(TaskItem newItem) {
         this.jdbi.withHandle(handle -> {
             return handle.createUpdate(
-                    "INSERT INTO \"task\" (id, head_line, description) "
-                            + "VALUES (:id, :head_line, :description)")
+                    "INSERT INTO \"task\" (id, head_line, description, status) "
+                            + "VALUES (:id, :head_line, :description, :status)")
                     .bind("id", newItem.getId())
                     .bind("head_line", newItem.getHeadLine())
                     .bind("description", newItem.getDescription().orElse(null))
+                    .bind("status", newItem.getTaskStatus())
                     .execute();
         });
         return newItem.getId();
@@ -56,11 +57,13 @@ final public class SqliteTaskDao implements TaskDao {
     public void edit(UUID id, TaskItem item) {
         this.jdbi.withHandle(handle -> {
             return handle.createUpdate(
-                    "UPDATE \"task\" SET head_line = :head_line, description = :description "
+                    "UPDATE \"task\" "
+                            + "SET head_line = :head_line, description = :description status = :status"
                             + "WHERE id = :id")
                     .bind("head_line", item.getHeadLine())
                     .bind("description", item.getDescription().orElse(null))
                     .bind("id", id)
+                    .bind("status", item.getTaskStatus())
                     .execute();
         });
     }

@@ -26,22 +26,38 @@ public class TaskList extends JList<TaskItemComponent> {
 
         this.addMouseListener(
                 new MouseAdapter() {
+
+                    @Override
                     public void mousePressed(MouseEvent e) {
                         if (e.isPopupTrigger()) {
                             showPopup(e);
                         }
                     }
 
+                    @Override
                     public void mouseReleased(MouseEvent e) {
                         if (e.isPopupTrigger()) {
                             showPopup(e);
                         }
                     }
 
-                    private void showPopup(MouseEvent e) {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (e.getClickCount() == 2) {
+                            TaskItemComponent selectedItem = this.getSelectedComponent(e);
+                            new TaskEditorPanel("Edit task", appEnv, selectedItem.getTaskItem())
+                                    .setupPanelWidgets().run();
+                        }
+                    }
+
+                    public TaskItemComponent getSelectedComponent(MouseEvent e) {
                         TaskItemComponent selectedComponent = TaskList.this.getModel()
                                 .getElementAt(TaskList.this.locationToIndex(e.getPoint()));
-                        TaskContextMenu popup = new TaskContextMenu(appEnv, selectedComponent);
+                        return selectedComponent;
+                    }
+
+                    private void showPopup(MouseEvent e) {
+                        TaskContextMenu popup = new TaskContextMenu(appEnv, this.getSelectedComponent(e));
                         popup.show(e.getComponent(),
                                 e.getX(), e.getY());
                     }

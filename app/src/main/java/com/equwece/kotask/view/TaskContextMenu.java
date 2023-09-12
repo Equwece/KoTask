@@ -21,7 +21,7 @@ public class TaskContextMenu extends JPopupMenu {
 
         JMenuItem editItem = new JMenuItem("Edit task");
         editItem.addActionListener(event -> {
-            new TaskEditorPanel("Create task", appEnv, selectedItem.getTaskItem())
+            new TaskEditorPanel("Edit task", appEnv, selectedItem.getTaskItem())
                     .setupPanelWidgets().run();
         });
         this.add(editItem);
