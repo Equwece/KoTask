@@ -5,27 +5,30 @@ import java.util.List;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
+import com.equwece.kotask.AppEnv;
 import com.equwece.kotask.controller.TaskController;
-import com.equwece.kotask.data.TaskDao;
 import com.equwece.kotask.data.TaskItem;
 
 public class TaskList extends JList<TaskItemComponent> {
     final private TaskController taskController;
-    final private TaskDao taskDao;
+    final private AppEnv appEnv;
 
-    public TaskList(TaskDao taskDao) {
+    public TaskList(AppEnv appEnv) {
         super();
-        this.taskDao = taskDao;
-        this.taskController = new TaskController(this.taskDao);
+        this.appEnv = appEnv;
+        this.taskController = new TaskController(this.appEnv);
         this.setCellRenderer(new TaskListComponentRenderer());
         this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         this.setLayoutOrientation(JList.VERTICAL);
         this.setVisibleRowCount(-1);
-        this.setListData(this.getTaskItems());
     }
 
-    public TaskItemComponent[] getTaskItems() {
-        List<TaskItem> items = this.taskController.getAllItems();
+    public void updateTaskList(List<TaskItem> newTaskList) {
+        TaskItemComponent[] newTaskComponents = this.constructTaskComponents(newTaskList);
+        this.setListData(newTaskComponents);
+    }
+
+    public TaskItemComponent[] constructTaskComponents(List<TaskItem> items) {
         TaskItemComponent[] taskItems = new TaskItemComponent[items.size()];
         for (int i = 0; i < items.size(); i++) {
             taskItems[i] = new TaskItemComponent(items.get(i));

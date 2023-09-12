@@ -1,32 +1,66 @@
 package com.equwece.kotask.view;
 
+import java.util.List;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 import com.equwece.kotask.AppEnv;
+import com.equwece.kotask.controller.TaskController;
+import com.equwece.kotask.data.TaskItem;
 
 import net.miginfocom.swing.MigLayout;
 
 public class AppWindow extends JFrame {
 
-    final private AppEnv appEnv;
+    private TaskList taskList;
 
     public AppWindow(AppEnv appEnv) {
         super("KoTask");
-        this.appEnv = appEnv;
+        appEnv.setAppWindow(this);
+
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        TaskController taskController = new TaskController(appEnv);
+
         JPanel contentPane = new JPanel();
 
         MigLayout mainLayout = new MigLayout("fillx");
 
         contentPane.setLayout(mainLayout);
 
-        TaskList taskList = new TaskList(this.appEnv.getTaskDao());
+        TaskList taskList = new TaskList(appEnv);
+        this.taskList = taskList;
 
+        new SwingWorker<List<TaskItem>, Void>() {
+
+            @Override
+            protected List<TaskItem> doInBackground() throws Exception {
+                return taskController.getAllItems();
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    taskList.updateTaskList(get());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.execute();
+
+        ToolBar toolBar = new ToolBar(appEnv);
+
+        contentPane.add(toolBar, "wrap");
         contentPane.add(taskList, "grow");
 
         this.getContentPane().add(contentPane);
+    }
 
+    public TaskList getTaskList() {
+        return taskList;
     }
 
     public void run() {

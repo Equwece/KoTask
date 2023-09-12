@@ -32,8 +32,16 @@ final public class SqliteTaskDao implements TaskDao {
 
     @Override
     public UUID create(TaskItem newItem) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'create'");
+        this.jdbi.withHandle(handle -> {
+            return handle.createUpdate(
+                    "INSERT INTO \"task\" (id, head_line, description) "
+                            + "VALUES (:id, :head_line, :description)")
+                    .bind("id", newItem.getId())
+                    .bind("head_line", newItem.getHeadLine())
+                    .bind("description", newItem.getDescription().orElse(null))
+                    .execute();
+        });
+        return newItem.getId();
     }
 
     @Override
