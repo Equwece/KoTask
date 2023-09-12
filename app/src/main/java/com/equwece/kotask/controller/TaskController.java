@@ -24,6 +24,10 @@ final public class TaskController {
         this.appEnv.getTaskDao().create(newItem);
     }
 
+    public void editItem(UUID itemId, TaskItem newItem) {
+       this.appEnv.getTaskDao().edit(itemId, newItem); 
+    }
+
     public void deleteItem(UUID itemId) {
         this.appEnv.getTaskDao().delete(itemId);
     }

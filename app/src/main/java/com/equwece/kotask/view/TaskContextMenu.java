@@ -19,6 +19,13 @@ public class TaskContextMenu extends JPopupMenu {
 
         TaskController taskController = new TaskController(appEnv);
 
+        JMenuItem editItem = new JMenuItem("Edit task");
+        editItem.addActionListener(event -> {
+            new TaskEditorPanel("Create task", appEnv, selectedItem.getTaskItem())
+                    .setupPanelWidgets().run();
+        });
+        this.add(editItem);
+
         JMenuItem deleteItem = new JMenuItem("Delete task");
         deleteItem.addActionListener(event -> {
             new SwingWorker<Void, Void>() {
@@ -46,6 +53,7 @@ public class TaskContextMenu extends JPopupMenu {
             }.execute();
         });
         this.add(deleteItem);
+
     }
 
     public AppEnv getAppEnv() {

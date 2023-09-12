@@ -26,11 +26,27 @@ public class TaskCreatorPanel extends JFrame {
         this.appEnv = appEnv;
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         JPanel contentPane = new JPanel();
-        TaskController taskController = new TaskController(appEnv);
 
         MigLayout currentLayout = new MigLayout("fillx");
         contentPane.setLayout(currentLayout);
 
+        this.setContentPane(contentPane);
+        this.setLocationByPlatform(true);
+        this.setSize(500, 250);
+        this.setLocationRelativeTo(null);
+    }
+
+    public TaskCreatorPanel run() {
+        this.setVisible(true);
+        return this;
+    }
+
+    public AppEnv getAppEnv() {
+        return appEnv;
+    }
+
+    public TaskCreatorPanel setupPanelWidgets() {
+        TaskController taskController = new TaskController(appEnv);
         JTextField headLineInput = new JTextField();
         JTextArea descriptionInput = new JTextArea();
         descriptionInput.setRows(7);
@@ -80,17 +96,10 @@ public class TaskCreatorPanel extends JFrame {
         buttonContainer.add(saveTask);
         buttonContainer.add(cancelCreation);
 
-        contentPane.add(headLineInput, "growx, wrap");
-        contentPane.add(scrollPane, "grow, wrap");
-        contentPane.add(buttonContainer);
-
-        this.getContentPane().add(contentPane);
-        this.setLocationByPlatform(true);
-        this.setSize(500, 250);
-        this.setLocationRelativeTo(null);
-
-        this.setVisible(true);
-        // headLineInput.requestFocus();
+        this.getContentPane().add(headLineInput, "growx, wrap");
+        this.getContentPane().add(scrollPane, "grow, wrap");
+        this.getContentPane().add(buttonContainer);
+        return this;
     }
 
 }

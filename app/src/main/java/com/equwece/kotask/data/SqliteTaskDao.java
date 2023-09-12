@@ -54,8 +54,15 @@ final public class SqliteTaskDao implements TaskDao {
 
     @Override
     public void edit(UUID id, TaskItem item) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'edit'");
+        this.jdbi.withHandle(handle -> {
+            return handle.createUpdate(
+                    "UPDATE \"task\" SET head_line = :head_line, description = :description "
+                            + "WHERE id = :id")
+                    .bind("head_line", item.getHeadLine())
+                    .bind("description", item.getDescription().orElse(null))
+                    .bind("id", id)
+                    .execute();
+        });
     }
 
 }

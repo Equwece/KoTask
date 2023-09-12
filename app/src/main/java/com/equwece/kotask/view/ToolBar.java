@@ -19,7 +19,7 @@ final public class ToolBar extends JPanel {
 
         JButton createTaskButton = new JButton("Create task");
         createTaskButton.addActionListener(event -> {
-            new TaskCreatorPanel("Create task", appEnv);
+            new TaskCreatorPanel("Create task", appEnv).setupPanelWidgets().run();
         });
         this.add(createTaskButton);
     }
