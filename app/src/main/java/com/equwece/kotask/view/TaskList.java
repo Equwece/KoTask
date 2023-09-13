@@ -60,7 +60,13 @@ public class TaskList extends JList<TaskItemComponent> {
                         return selectedComponent;
                     }
 
+                    public void ensureItemVisuallySelected(MouseEvent e) {
+                        int itemIndex = TaskList.this.locationToIndex(e.getPoint());
+                        TaskList.this.setSelectedIndex(itemIndex);
+                    }
+
                     private void showPopup(MouseEvent e) {
+                        this.ensureItemVisuallySelected(e);
                         TaskContextMenu popup = new TaskContextMenu(appEnv, this.getSelectedComponent(e));
                         popup.show(e.getComponent(),
                                 e.getX(), e.getY());
