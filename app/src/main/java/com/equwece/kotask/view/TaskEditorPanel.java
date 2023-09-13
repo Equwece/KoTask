@@ -46,8 +46,12 @@ public class TaskEditorPanel extends TaskCreatorPanel {
             new SwingWorker<Void, Void>() {
                 @Override
                 protected Void doInBackground() throws Exception {
-                    TaskItem updatedItem = new TaskItem(headLineInput.getText(),
-                            TaskEditorPanel.this.getSelectedItem().getId(), Optional.of(descriptionInput.getText()));
+                    TaskItem updatedItem = new TaskItem(
+                            headLineInput.getText(),
+                            TaskEditorPanel.this.getSelectedItem().getId(),
+                            Optional.of(descriptionInput.getText()),
+                            TaskEditorPanel.this.getSelectedItem().getTaskStatus(),
+                            TaskEditorPanel.this.getSelectedItem().getCreationDate());
                     taskController.editItem(updatedItem.getId(), updatedItem);
                     return null;
                 }

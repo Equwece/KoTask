@@ -45,6 +45,19 @@ application {
 }
 
 
+
+sourceSets {
+    main {
+        java {
+            setSrcDirs(listOf("src/main/java"))
+        }
+        resources {
+            setSrcDirs(listOf("src/main/resources"))
+        }
+    }
+}
+
+
 tasks.jar {
     manifest.attributes["Main-Class"] = "com.equwece.kotask.App"
     val dependencies = configurations
