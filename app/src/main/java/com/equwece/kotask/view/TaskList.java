@@ -4,13 +4,11 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 
@@ -18,17 +16,15 @@ import com.equwece.kotask.AppEnv;
 import com.equwece.kotask.controller.DeleteTaskAction;
 import com.equwece.kotask.controller.OpenTaskCreatorAction;
 import com.equwece.kotask.controller.OpenTaskEditorAction;
-import com.equwece.kotask.controller.TaskController;
+import com.equwece.kotask.controller.ToggleTaskDoneAction;
 import com.equwece.kotask.data.TaskItem;
 
 public class TaskList extends JList<TaskItemComponent> {
-    final private TaskController taskController;
     final private AppEnv appEnv;
 
     public TaskList(AppEnv appEnv) {
         super();
         this.appEnv = appEnv;
-        this.taskController = appEnv.getTaskController();
         this.setCellRenderer(new TaskListComponentRenderer());
         this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         this.setLayoutOrientation(JList.VERTICAL);
@@ -51,29 +47,39 @@ public class TaskList extends JList<TaskItemComponent> {
                             }
 
                             case 'e': {
-                                TaskItemComponent selectedItem = TaskList.this.getModel()
-                                        .getElementAt(TaskList.this.getSelectedIndex());
+                                TaskItemComponent selectedItem = getSelectedItem();
                                 // TODO: Bad pattern, pass null to action listener's method
                                 new OpenTaskEditorAction(TaskList.this.appEnv, selectedItem).actionPerformed(null);
                                 break;
                             }
 
                             case 'd': {
-                                TaskItemComponent selectedItem = TaskList.this.getModel()
-                                        .getElementAt(TaskList.this.getSelectedIndex());
+                                TaskItemComponent selectedItem = getSelectedItem();
                                 // TODO: Bad pattern, pass null to action listener's method
                                 new DeleteTaskAction(TaskList.this.appEnv, selectedItem).actionPerformed(null);
                                 break;
                             }
 
                             case KeyEvent.VK_DELETE: {
-                                TaskItemComponent selectedItem = TaskList.this.getModel()
-                                        .getElementAt(TaskList.this.getSelectedIndex());
+                                TaskItemComponent selectedItem = getSelectedItem();
                                 // TODO: Bad pattern, pass null to action listener's method
                                 new DeleteTaskAction(TaskList.this.appEnv, selectedItem).actionPerformed(null);
                                 break;
                             }
+
+                            case 'r': {
+                                TaskItemComponent selectedItem = getSelectedItem();
+                                // TODO: Bad pattern, pass null to action listener's method
+                                new ToggleTaskDoneAction(TaskList.this.appEnv, selectedItem).actionPerformed(null);
+                                break;
+                            }
                         }
+                    }
+
+                    private TaskItemComponent getSelectedItem() {
+                        TaskItemComponent selectedItem = TaskList.this.getModel()
+                                .getElementAt(TaskList.this.getSelectedIndex());
+                        return selectedItem;
                     }
                 });
 
