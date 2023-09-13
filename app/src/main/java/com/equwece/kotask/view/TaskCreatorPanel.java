@@ -1,9 +1,7 @@
 package com.equwece.kotask.view;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -11,17 +9,39 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingWorker;
 
 import com.equwece.kotask.AppEnv;
-import com.equwece.kotask.controller.FetchTaskListWorker;
-import com.equwece.kotask.controller.TaskController;
-import com.equwece.kotask.data.TaskItem;
-import com.equwece.kotask.data.TaskItem.TaskStatus;
+import com.equwece.kotask.controller.SaveTaskAction;
 
 import net.miginfocom.swing.MigLayout;
 
 public class TaskCreatorPanel extends JFrame {
+
+    private final class TaskCreatorKeyAdapter extends KeyAdapter {
+        private final JTextField headLineInput;
+        private final JTextArea descriptionInput;
+
+        private TaskCreatorKeyAdapter(JTextField headLineInput, JTextArea descriptionInput) {
+            this.headLineInput = headLineInput;
+            this.descriptionInput = descriptionInput;
+        }
+
+        @Override
+        public void keyTyped(KeyEvent event) {
+            switch (event.getKeyChar()) {
+                case '\n': {
+                    new SaveTaskAction(appEnv, headLineInput, descriptionInput, TaskCreatorPanel.this)
+                            .actionPerformed(null);
+                    break;
+                }
+                case KeyEvent.VK_ESCAPE: {
+                    TaskCreatorPanel.this.dispose();
+                    break;
+                }
+            }
+
+        }
+    }
 
     final private AppEnv appEnv;
 
@@ -50,55 +70,20 @@ public class TaskCreatorPanel extends JFrame {
     }
 
     public TaskCreatorPanel setupPanelWidgets() {
-        TaskController taskController = this.getAppEnv().getTaskController();
         JTextField headLineInput = new JTextField();
         JTextArea descriptionInput = new JTextArea();
         descriptionInput.setRows(7);
         JScrollPane scrollPane = new JScrollPane(descriptionInput);
 
+        headLineInput.addKeyListener(
+                new TaskCreatorKeyAdapter(headLineInput, descriptionInput));
+
+        descriptionInput.addKeyListener(
+                new TaskCreatorKeyAdapter(headLineInput, descriptionInput));
+
         JPanel buttonContainer = new JPanel();
         JButton saveTask = new JButton("Save");
-        saveTask.addActionListener(event -> {
-            new SwingWorker<Void, Void>() {
-                @Override
-                protected Void doInBackground() throws Exception {
-                    TaskItem newItem = new TaskItem(
-                            headLineInput.getText(),
-                            UUID.randomUUID(),
-                            Optional.of(descriptionInput.getText()),
-                            TaskStatus.ACTIVE,
-                            LocalDateTime.now());
-                    taskController.createItem(newItem);
-                    return null;
-                }
-
-                @Override
-                protected void done() {
-                    new SwingWorker<List<TaskItem>, Void>() {
-                        @Override
-                        protected List<TaskItem> doInBackground() throws Exception {
-                            return taskController.getAllItems();
-                        }
-
-                        @Override
-                        protected void done() {
-                            new FetchTaskListWorker(taskController) {
-                                @Override
-                                protected void done() {
-                                    try {
-                                        appEnv.getAppWindow().getTaskList().updateTaskList(get());
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    TaskCreatorPanel.this.dispose();
-                                }
-                            }.execute();
-                        }
-                    }.execute();
-                }
-            }.execute();
-
-        });
+        saveTask.addActionListener(new SaveTaskAction(appEnv, headLineInput, descriptionInput, this));
         JButton cancelCreation = new JButton("Cancel");
         cancelCreation.addActionListener(event -> {
             this.dispose();
@@ -109,6 +94,7 @@ public class TaskCreatorPanel extends JFrame {
         this.getContentPane().add(headLineInput, "growx, wrap");
         this.getContentPane().add(scrollPane, "grow, wrap");
         this.getContentPane().add(buttonContainer);
+
         return this;
     }
 
