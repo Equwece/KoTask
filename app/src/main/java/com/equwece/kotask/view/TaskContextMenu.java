@@ -5,7 +5,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingWorker;
 
 import com.equwece.kotask.AppEnv;
+import com.equwece.kotask.controller.DeleteTaskAction;
 import com.equwece.kotask.controller.FetchTaskListWorker;
+import com.equwece.kotask.controller.OpenTaskEditorAction;
 import com.equwece.kotask.controller.TaskController;
 import com.equwece.kotask.data.TaskItem;
 import com.equwece.kotask.data.TaskItem.TaskStatus;
@@ -59,38 +61,11 @@ public class TaskContextMenu extends JPopupMenu {
         this.add(toggleDone);
 
         JMenuItem editItem = new JMenuItem("Edit task");
-        editItem.addActionListener(event -> {
-            new TaskEditorPanel("Edit task", appEnv, selectedItem.getTaskItem())
-                    .setupPanelWidgets().run();
-        });
+        editItem.addActionListener(new OpenTaskEditorAction(this.appEnv, this.selectedItem));
         this.add(editItem);
 
         JMenuItem deleteItem = new JMenuItem("Delete task");
-        deleteItem.addActionListener(event -> {
-            new SwingWorker<Void, Void>() {
-
-                @Override
-                protected Void doInBackground() throws Exception {
-                    taskController.deleteItem(selectedItem.getTaskItem().getId());
-                    return null;
-                }
-
-                @Override
-                protected void done() {
-                    new FetchTaskListWorker(taskController) {
-                        @Override
-                        protected void done() {
-                            try {
-                                appEnv.getAppWindow().getTaskList().updateTaskList(get());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }.execute();
-                }
-
-            }.execute();
-        });
+        deleteItem.addActionListener(new DeleteTaskAction(this.appEnv, this.selectedItem));
         this.add(deleteItem);
 
     }

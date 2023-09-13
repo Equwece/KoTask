@@ -1,5 +1,7 @@
 package com.equwece.kotask.view;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -8,9 +10,13 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JList;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 
 import com.equwece.kotask.AppEnv;
+import com.equwece.kotask.controller.DeleteTaskAction;
+import com.equwece.kotask.controller.OpenTaskCreatorAction;
+import com.equwece.kotask.controller.OpenTaskEditorAction;
 import com.equwece.kotask.controller.TaskController;
 import com.equwece.kotask.data.TaskItem;
 
@@ -26,6 +32,49 @@ public class TaskList extends JList<TaskItemComponent> {
         this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         this.setLayoutOrientation(JList.VERTICAL);
         this.setVisibleRowCount(-1);
+
+        this.addKeyListener(
+                new KeyAdapter() {
+                    @Override
+                    public void keyTyped(KeyEvent event) {
+                        switch (event.getKeyChar()) {
+                            case 'j': {
+                                int currentListInd = TaskList.this.getSelectedIndex();
+                                TaskList.this.setSelectedIndex(currentListInd + 1);
+                                break;
+                            }
+                            case 'k': {
+                                int currentListInd = TaskList.this.getSelectedIndex();
+                                TaskList.this.setSelectedIndex(currentListInd - 1);
+                                break;
+                            }
+
+                            case 'e': {
+                                TaskItemComponent selectedItem = TaskList.this.getModel()
+                                        .getElementAt(TaskList.this.getSelectedIndex());
+                                // TODO: Bad pattern, pass null to action listener's method
+                                new OpenTaskEditorAction(TaskList.this.appEnv, selectedItem).actionPerformed(null);
+                                break;
+                            }
+
+                            case 'd': {
+                                TaskItemComponent selectedItem = TaskList.this.getModel()
+                                        .getElementAt(TaskList.this.getSelectedIndex());
+                                // TODO: Bad pattern, pass null to action listener's method
+                                new DeleteTaskAction(TaskList.this.appEnv, selectedItem).actionPerformed(null);
+                                break;
+                            }
+
+                            case KeyEvent.VK_DELETE: {
+                                TaskItemComponent selectedItem = TaskList.this.getModel()
+                                        .getElementAt(TaskList.this.getSelectedIndex());
+                                // TODO: Bad pattern, pass null to action listener's method
+                                new DeleteTaskAction(TaskList.this.appEnv, selectedItem).actionPerformed(null);
+                                break;
+                            }
+                        }
+                    }
+                });
 
         this.addMouseListener(
                 new MouseAdapter() {
@@ -72,6 +121,11 @@ public class TaskList extends JList<TaskItemComponent> {
                                 e.getX(), e.getY());
                     }
                 });
+
+        this.getInputMap().put(KeyStroke.getKeyStroke('n'), "createNewTask");
+        this.getActionMap().put("createNewTask", new OpenTaskCreatorAction(appEnv));
+
+        this.setSelectedIndex(0);
     }
 
     public void updateTaskList(List<TaskItem> newTaskList) {
