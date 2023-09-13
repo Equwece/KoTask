@@ -94,10 +94,8 @@ public class App {
                             break;
                     }
 
-                    Long creationDateEpoch = Long.parseLong(rs.getString("creation_date"));
-                    Instant instant = Instant.ofEpochSecond(creationDateEpoch);
-                    ZoneId zoneId = ZoneId.systemDefault();
-                    LocalDateTime creationDate = instant.atZone(zoneId).toLocalDateTime();
+                    String creationDateStr = rs.getString("creation_date");
+                    LocalDateTime creationDate = LocalDateTime.parse(creationDateStr);
 
                     return new TaskItem(rs.getString("head_line"), UUID.fromString(rs.getString("id")),
                             description, taskStatus, creationDate);

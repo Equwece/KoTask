@@ -40,7 +40,7 @@ final public class SqliteTaskDao implements TaskDao {
                     .bind("head_line", item.getHeadLine())
                     .bind("description", item.getDescription().orElse(null))
                     .bind("status", item.getTaskStatus())
-                    .bind("creation_date", item.getCreationDate())
+                    .bind("creation_date", item.getCreationDate().toString())
                     .execute();
         });
         return item.getId();
@@ -66,7 +66,7 @@ final public class SqliteTaskDao implements TaskDao {
                     .bind("description", item.getDescription().orElse(null))
                     .bind("id", id)
                     .bind("status", item.getTaskStatus())
-                    .bind("creation_date", item.getCreationDate())
+                    .bind("creation_date", item.getCreationDate().toString())
                     .execute();
         });
     }

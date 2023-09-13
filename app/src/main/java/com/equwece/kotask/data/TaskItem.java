@@ -28,22 +28,6 @@ final public class TaskItem {
         this.creationDate = creationDate;
     }
 
-    public TaskItem(String headLine, UUID id, Optional<String> description) {
-        this.headLine = headLine;
-        this.id = id;
-        this.description = description;
-        this.taskStatus = TaskStatus.ACTIVE;
-        this.creationDate = LocalDateTime.now();
-    }
-
-    public TaskItem(String headLine) {
-        this.headLine = headLine;
-        this.description = Optional.empty();
-        this.id = UUID.randomUUID();
-        this.taskStatus = TaskStatus.ACTIVE;
-        this.creationDate = LocalDateTime.now();
-    }
-
     public UUID getId() {
         return id;
     }

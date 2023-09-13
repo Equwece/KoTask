@@ -1,6 +1,9 @@
 package com.equwece.kotask.view;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,6 +17,7 @@ import com.equwece.kotask.AppEnv;
 import com.equwece.kotask.controller.FetchTaskListWorker;
 import com.equwece.kotask.controller.TaskController;
 import com.equwece.kotask.data.TaskItem;
+import com.equwece.kotask.data.TaskItem.TaskStatus;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -58,7 +62,13 @@ public class TaskCreatorPanel extends JFrame {
             new SwingWorker<Void, Void>() {
                 @Override
                 protected Void doInBackground() throws Exception {
-                    taskController.createItem(headLineInput.getText(), descriptionInput.getText());
+                    TaskItem newItem = new TaskItem(
+                            headLineInput.getText(),
+                            UUID.randomUUID(),
+                            Optional.of(descriptionInput.getText()),
+                            TaskStatus.ACTIVE,
+                            LocalDateTime.now());
+                    taskController.createItem(newItem);
                     return null;
                 }
 

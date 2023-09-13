@@ -19,13 +19,12 @@ final public class TaskController {
         return items;
     }
 
-    public void createItem(String headLine, String description) {
-        TaskItem newItem = new TaskItem(headLine, UUID.randomUUID(), Optional.of(description));
-        this.appEnv.getTaskDao().create(newItem);
+    public void createItem(TaskItem item) {
+        this.appEnv.getTaskDao().create(item);
     }
 
     public void editItem(UUID itemId, TaskItem newItem) {
-       this.appEnv.getTaskDao().edit(itemId, newItem); 
+        this.appEnv.getTaskDao().edit(itemId, newItem);
     }
 
     public void deleteItem(UUID itemId) {
