@@ -32,7 +32,8 @@ public class TaskContextMenu extends JPopupMenu {
                             selectedItem.getTaskItem().getHeadLine(),
                             selectedItem.getTaskItem().getId(),
                             selectedItem.getTaskItem().getDescription(),
-                            itemIsDone ? TaskStatus.ACTIVE : TaskStatus.DONE);
+                            itemIsDone ? TaskStatus.ACTIVE : TaskStatus.DONE,
+                            selectedItem.getTaskItem().getCreationDate());
                     taskController.editItem(newItem.getId(), newItem);
                     return null;
                 }

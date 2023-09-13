@@ -1,5 +1,6 @@
 package com.equwece.kotask.data;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,14 +12,20 @@ final public class TaskItem {
     final private String headLine;
     final private UUID id;
     final private Optional<String> description;
-
     final private TaskStatus taskStatus;
+    final private LocalDateTime creationDate;
 
-    public TaskItem(String headLine, UUID id, Optional<String> description, TaskStatus taskStatus) {
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public TaskItem(String headLine, UUID id, Optional<String> description, TaskStatus taskStatus,
+            LocalDateTime creationDate) {
         this.headLine = headLine;
         this.id = id;
         this.description = description;
         this.taskStatus = taskStatus;
+        this.creationDate = creationDate;
     }
 
     public TaskItem(String headLine, UUID id, Optional<String> description) {
@@ -26,6 +33,7 @@ final public class TaskItem {
         this.id = id;
         this.description = description;
         this.taskStatus = TaskStatus.ACTIVE;
+        this.creationDate = LocalDateTime.now();
     }
 
     public TaskItem(String headLine) {
@@ -33,6 +41,7 @@ final public class TaskItem {
         this.description = Optional.empty();
         this.id = UUID.randomUUID();
         this.taskStatus = TaskStatus.ACTIVE;
+        this.creationDate = LocalDateTime.now();
     }
 
     public UUID getId() {

@@ -31,18 +31,19 @@ final public class SqliteTaskDao implements TaskDao {
     }
 
     @Override
-    public UUID create(TaskItem newItem) {
+    public UUID create(TaskItem item) {
         this.jdbi.withHandle(handle -> {
             return handle.createUpdate(
-                    "INSERT INTO \"task\" (id, head_line, description, status) "
-                            + "VALUES (:id, :head_line, :description, :status)")
-                    .bind("id", newItem.getId())
-                    .bind("head_line", newItem.getHeadLine())
-                    .bind("description", newItem.getDescription().orElse(null))
-                    .bind("status", newItem.getTaskStatus())
+                    "INSERT INTO \"task\" (id, head_line, description, status, creation_date) "
+                            + "VALUES (:id, :head_line, :description, :status, :creation_date)")
+                    .bind("id", item.getId())
+                    .bind("head_line", item.getHeadLine())
+                    .bind("description", item.getDescription().orElse(null))
+                    .bind("status", item.getTaskStatus())
+                    .bind("creation_date", item.getCreationDate())
                     .execute();
         });
-        return newItem.getId();
+        return item.getId();
     }
 
     @Override
@@ -59,11 +60,13 @@ final public class SqliteTaskDao implements TaskDao {
             return handle.createUpdate(
                     "UPDATE \"task\" "
                             + "SET head_line = :head_line, description = :description, status = :status"
+                            + ", creation_date = :creation_date"
                             + " WHERE id = :id")
                     .bind("head_line", item.getHeadLine())
                     .bind("description", item.getDescription().orElse(null))
                     .bind("id", id)
                     .bind("status", item.getTaskStatus())
+                    .bind("creation_date", item.getCreationDate())
                     .execute();
         });
     }

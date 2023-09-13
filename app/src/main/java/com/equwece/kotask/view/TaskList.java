@@ -2,6 +2,9 @@ package com.equwece.kotask.view;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JList;
@@ -66,8 +69,14 @@ public class TaskList extends JList<TaskItemComponent> {
     }
 
     public void updateTaskList(List<TaskItem> newTaskList) {
+        sortTaskListByDate(newTaskList);
         TaskItemComponent[] newTaskComponents = this.constructTaskComponents(newTaskList);
         this.setListData(newTaskComponents);
+    }
+
+    public void sortTaskListByDate(List<TaskItem> taskList) {
+        taskList.sort(Comparator.comparing(TaskItem::getCreationDate));
+        Collections.reverse(taskList);
     }
 
     public TaskItemComponent[] constructTaskComponents(List<TaskItem> items) {

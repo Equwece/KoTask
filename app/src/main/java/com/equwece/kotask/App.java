@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -50,6 +53,7 @@ public class App {
                                 + "\"description\"	TEXT,"
                                 + "\"id\"	TEXT NOT NULL,"
                                 + "\"status\" TEXT NOT NULL DEFAULT 'ACTIVE',"
+                                + "\"creation_date\" TEXT NOT NULL,"
                                 + "CONSTRAINT \"status_check\" CHECK(status IN ('ACTIVE','DONE')),"
                                 + "PRIMARY KEY(\"id\"));");
                 return null;
@@ -67,6 +71,13 @@ public class App {
         jdbi.registerRowMapper(TaskItem.class,
                 (rs, ctx) -> {
                     String maybeDescription = rs.getString("description");
+                    Optional<String> description;
+                    if (maybeDescription == null) {
+                        description = Optional.empty();
+                    } else {
+                        description = Optional.of(maybeDescription);
+                    }
+
                     String taskStatusStr = rs.getString("status");
                     TaskStatus taskStatus;
                     switch (taskStatusStr) {
@@ -77,14 +88,14 @@ public class App {
                             taskStatus = TaskStatus.ACTIVE;
                             break;
                     }
-                    Optional<String> description;
-                    if (maybeDescription == null) {
-                        description = Optional.empty();
-                    } else {
-                        description = Optional.of(maybeDescription);
-                    }
+
+                    Long creationDateEpoch = Long.parseLong(rs.getString("creation_date"));
+                    Instant instant = Instant.ofEpochSecond(creationDateEpoch);
+                    ZoneId zoneId = ZoneId.systemDefault();
+                    LocalDateTime creationDate = instant.atZone(zoneId).toLocalDateTime();
+
                     return new TaskItem(rs.getString("head_line"), UUID.fromString(rs.getString("id")),
-                            description, taskStatus);
+                            description, taskStatus, creationDate);
                 });
 
         setupDB(appDirPath, jdbi);
