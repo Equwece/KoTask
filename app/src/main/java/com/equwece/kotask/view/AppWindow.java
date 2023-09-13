@@ -22,7 +22,7 @@ public class AppWindow extends JFrame {
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        TaskController taskController = new TaskController(appEnv);
+        TaskController taskController = appEnv.getTaskController();
 
         JPanel contentPane = new JPanel();
 

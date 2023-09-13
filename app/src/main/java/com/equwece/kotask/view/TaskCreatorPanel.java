@@ -50,7 +50,7 @@ public class TaskCreatorPanel extends JFrame {
     }
 
     public TaskCreatorPanel setupPanelWidgets() {
-        TaskController taskController = new TaskController(appEnv);
+        TaskController taskController = this.getAppEnv().getTaskController();
         JTextField headLineInput = new JTextField();
         JTextArea descriptionInput = new JTextArea();
         descriptionInput.setRows(7);

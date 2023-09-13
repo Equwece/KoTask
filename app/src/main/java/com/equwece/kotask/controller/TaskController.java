@@ -5,29 +5,34 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.equwece.kotask.AppEnv;
+import com.equwece.kotask.data.TaskDao;
 import com.equwece.kotask.data.TaskItem;
 
 final public class TaskController {
-    final private AppEnv appEnv;
+    final private TaskDao taskDao;
 
-    public TaskController(AppEnv appEnv) {
-        this.appEnv = appEnv;
+    public TaskDao getTaskDao() {
+        return taskDao;
+    }
+
+    public TaskController(TaskDao taskDao) {
+        this.taskDao = taskDao;
     }
 
     public List<TaskItem> getAllItems() {
-        List<TaskItem> items = appEnv.getTaskDao().getAll();
+        List<TaskItem> items = this.getTaskDao().getAll();
         return items;
     }
 
     public void createItem(TaskItem item) {
-        this.appEnv.getTaskDao().create(item);
+        this.getTaskDao().create(item);
     }
 
     public void editItem(UUID itemId, TaskItem newItem) {
-        this.appEnv.getTaskDao().edit(itemId, newItem);
+        this.getTaskDao().edit(itemId, newItem);
     }
 
     public void deleteItem(UUID itemId) {
-        this.appEnv.getTaskDao().delete(itemId);
+        this.getTaskDao().delete(itemId);
     }
 }

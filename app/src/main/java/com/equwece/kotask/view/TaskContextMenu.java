@@ -20,7 +20,7 @@ public class TaskContextMenu extends JPopupMenu {
         this.selectedItem = selectedItem;
         Boolean itemIsDone = selectedItem.getTaskItem().getTaskStatus() == TaskStatus.DONE;
 
-        TaskController taskController = new TaskController(appEnv);
+        TaskController taskController = appEnv.getTaskController();
 
         JMenuItem toggleDone = new JMenuItem(String.format("Mark as %s",
                 itemIsDone ? "active" : "done"));

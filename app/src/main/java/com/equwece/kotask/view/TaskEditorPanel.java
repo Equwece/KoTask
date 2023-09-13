@@ -30,7 +30,7 @@ public class TaskEditorPanel extends TaskCreatorPanel {
 
     @Override
     public TaskEditorPanel setupPanelWidgets() {
-        TaskController taskController = new TaskController(this.getAppEnv());
+        TaskController taskController = this.getAppEnv().getTaskController();
         JTextField headLineInput = new JTextField();
         headLineInput.setText(this.getSelectedItem().getHeadLine());
 

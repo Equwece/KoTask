@@ -21,7 +21,7 @@ public class TaskList extends JList<TaskItemComponent> {
     public TaskList(AppEnv appEnv) {
         super();
         this.appEnv = appEnv;
-        this.taskController = new TaskController(this.appEnv);
+        this.taskController = appEnv.getTaskController();
         this.setCellRenderer(new TaskListComponentRenderer());
         this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         this.setLayoutOrientation(JList.VERTICAL);

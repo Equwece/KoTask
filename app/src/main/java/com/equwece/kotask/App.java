@@ -18,6 +18,7 @@ import javax.swing.UIManager;
 
 import org.jdbi.v3.core.Jdbi;
 
+import com.equwece.kotask.controller.TaskController;
 import com.equwece.kotask.data.SqliteTaskDao;
 import com.equwece.kotask.data.TaskDao;
 import com.equwece.kotask.data.TaskItem;
@@ -103,8 +104,9 @@ public class App {
 
         setupDB(appDirPath, jdbi);
 
-        TaskDao testTaskDao = new SqliteTaskDao(jdbi);
-        AppEnv appEnv = new AppEnv(testTaskDao);
+        TaskDao taskDao = new SqliteTaskDao(jdbi);
+        TaskController taskController = new TaskController(taskDao);
+        AppEnv appEnv = new AppEnv(taskDao, taskController);
 
         // Schedule a job for the event-dispatching thread:
         // creating and showing this application's GUI.
