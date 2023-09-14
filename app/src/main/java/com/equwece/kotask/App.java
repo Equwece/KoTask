@@ -56,6 +56,17 @@ public class App {
                                 + "\"creation_date\" TEXT NOT NULL,"
                                 + "CONSTRAINT \"status_check\" CHECK(status IN ('ACTIVE','DONE')),"
                                 + "PRIMARY KEY(\"id\"));");
+
+                handle.execute(
+                        "CREATE TABLE \"tag\" ("
+                                + "\"title\" TEXT NOT NULL,"
+                                + "\"color\" TEXT,"
+                                + "PRIMARY KEY(\"title\"));");
+
+                handle.execute(
+                        "CREATE TABLE \"task_title\" ("
+                                + "\"task_id\" TEXT REFERENCES task(id),"
+                                + "\"tag_title\" TEXT REFERENCES tag(title));");
                 return null;
             });
 
