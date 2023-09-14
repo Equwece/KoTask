@@ -104,9 +104,7 @@ public class TaskList extends JList<TaskItemComponent> {
                     public void mouseClicked(MouseEvent e) {
                         if (e.getClickCount() == 2) {
                             TaskItemComponent selectedItem = this.getSelectedComponent(e);
-                            new TaskEditorPanel("Edit task", appEnv, selectedItem.getTaskItem())
-                                    .setupPanelWidgets()
-                                    .run();
+                            new OpenTaskEditorAction(TaskList.this.appEnv, selectedItem);
                         }
                     }
 
@@ -132,13 +130,13 @@ public class TaskList extends JList<TaskItemComponent> {
         this.getInputMap().put(KeyStroke.getKeyStroke('n'), "createNewTask");
         this.getActionMap().put("createNewTask", new OpenTaskCreatorAction(appEnv));
 
-        this.setSelectedIndex(0);
     }
 
     public void updateTaskList(List<TaskItem> newTaskList) {
         sortTaskListByDate(newTaskList);
         TaskItemComponent[] newTaskComponents = this.constructTaskComponents(newTaskList);
         this.setListData(newTaskComponents);
+        this.setSelectedIndex(0);
     }
 
     public void sortTaskListByDate(List<TaskItem> taskList) {

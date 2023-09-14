@@ -10,6 +10,7 @@ import javax.swing.SwingWorker;
 import com.equwece.kotask.AppEnv;
 import com.equwece.kotask.data.TaskItem;
 import com.equwece.kotask.view.TaskEditorPanel;
+import com.equwece.kotask.view.TaskList;
 
 final public class UpdateTaskAction extends AbstractAction {
 
@@ -28,36 +29,40 @@ final public class UpdateTaskAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        taskEditorPanel.dispose();
-        new SwingWorker<Void, Void>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                TaskItem updatedItem = new TaskItem(
-                        headLineInput.getText(),
-                        taskEditorPanel.getSelectedItem().getId(),
-                        Optional.of(descriptionInput.getText()),
-                        taskEditorPanel.getSelectedItem().getTaskStatus(),
-                        taskEditorPanel.getSelectedItem().getCreationDate());
-                appEnv.getTaskController().editItem(updatedItem.getId(), updatedItem);
-                return null;
-            }
+        if (headLineInput.getText() != null && !headLineInput.getText().isEmpty()) {
+            taskEditorPanel.dispose();
+            new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    TaskItem updatedItem = new TaskItem(
+                            headLineInput.getText(),
+                            taskEditorPanel.getSelectedItem().getId(),
+                            Optional.of(descriptionInput.getText()),
+                            taskEditorPanel.getSelectedItem().getTaskStatus(),
+                            taskEditorPanel.getSelectedItem().getCreationDate());
+                    appEnv.getTaskController().editItem(updatedItem.getId(), updatedItem);
+                    return null;
+                }
 
-            @Override
-            protected void done() {
-                new FetchTaskListWorker(appEnv.getTaskController()) {
-                    @Override
-                    protected void done() {
-                        try {
-                            taskEditorPanel
-                                    .getAppEnv().getAppWindow().getTaskList().updateTaskList(get());
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                @Override
+                protected void done() {
+                    new FetchTaskListWorker(appEnv.getTaskController()) {
+                        @Override
+                        protected void done() {
+                            try {
+                                TaskList taskList = taskEditorPanel.getAppEnv().getAppWindow().getTaskList();
+                                int selectedIndex = taskList.getSelectedIndex();
+                                taskList.updateTaskList(get());
+                                taskList.setSelectedIndex(selectedIndex);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            taskEditorPanel.dispose();
                         }
-                        taskEditorPanel.dispose();
-                    }
-                }.execute();
-            }
-        }.execute();
+                    }.execute();
+                }
+            }.execute();
+        }
     }
 
 }

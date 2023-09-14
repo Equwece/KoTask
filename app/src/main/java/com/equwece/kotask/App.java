@@ -4,17 +4,12 @@
 package com.equwece.kotask;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Optional;
 import java.util.UUID;
-
-import javax.swing.UIManager;
 
 import org.jdbi.v3.core.Jdbi;
 
@@ -26,7 +21,6 @@ import com.equwece.kotask.data.TaskItem.TaskStatus;
 import com.equwece.kotask.view.AppWindow;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
-import com.formdev.flatlaf.FlatLightLaf;
 
 public class App {
     /**

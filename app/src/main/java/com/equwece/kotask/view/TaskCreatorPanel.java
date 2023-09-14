@@ -47,6 +47,7 @@ public class TaskCreatorPanel extends JFrame {
 
     public TaskCreatorPanel(String frameName, AppEnv appEnv) {
         super(frameName);
+        this.setFocusable(true);
         this.appEnv = appEnv;
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         JPanel contentPane = new JPanel();

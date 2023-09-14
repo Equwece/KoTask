@@ -32,39 +32,41 @@ final public class SaveTaskAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        taskCreatorPanel.dispose();
-        new SwingWorker<Void, Void>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                TaskItem newItem = new TaskItem(
-                        headLineInput.getText(),
-                        UUID.randomUUID(),
-                        Optional.of(descriptionInput.getText()),
-                        TaskStatus.ACTIVE,
-                        LocalDateTime.now());
-                appEnv.getTaskController().createItem(newItem);
-                return null;
-            }
+        if (headLineInput.getText() != null && !headLineInput.getText().isEmpty()) {
+            taskCreatorPanel.dispose();
+            new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    TaskItem newItem = new TaskItem(
+                            headLineInput.getText(),
+                            UUID.randomUUID(),
+                            Optional.of(descriptionInput.getText()),
+                            TaskStatus.ACTIVE,
+                            LocalDateTime.now());
+                    appEnv.getTaskController().createItem(newItem);
+                    return null;
+                }
 
-            @Override
-            protected void done() {
-                new FetchTaskListWorker(appEnv.getTaskController()) {
-                    @Override
-                    protected void done() {
-                        new FetchTaskListWorker(appEnv.getTaskController()) {
-                            @Override
-                            protected void done() {
-                                try {
-                                    appEnv.getAppWindow().getTaskList().updateTaskList(get());
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                @Override
+                protected void done() {
+                    new FetchTaskListWorker(appEnv.getTaskController()) {
+                        @Override
+                        protected void done() {
+                            new FetchTaskListWorker(appEnv.getTaskController()) {
+                                @Override
+                                protected void done() {
+                                    try {
+                                        appEnv.getAppWindow().getTaskList().updateTaskList(get());
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
-                            }
-                        }.execute();
-                    }
-                }.execute();
-            }
-        }.execute();
+                            }.execute();
+                        }
+                    }.execute();
+                }
+            }.execute();
+        }
     }
 
 }

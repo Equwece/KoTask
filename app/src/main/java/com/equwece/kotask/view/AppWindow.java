@@ -66,7 +66,6 @@ public class AppWindow extends JFrame {
     public void run() {
         // Get window size from OS or use constant.
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-
         this.setVisible(true);
     }
 

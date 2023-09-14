@@ -11,7 +11,7 @@ public class DeleteTaskWarningDialog extends JFrame {
 
     public DeleteTaskWarningDialog(AppEnv appEnv, TaskItemComponent selectedItem) {
         super();
-        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
         int deletionChoce = JOptionPane.showConfirmDialog(
