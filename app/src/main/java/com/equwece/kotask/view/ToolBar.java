@@ -1,5 +1,7 @@
 package com.equwece.kotask.view;
 
+import java.awt.Component;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -20,7 +22,10 @@ final public class ToolBar extends JPanel {
 
         JButton createTaskButton = new JButton("Create task");
         createTaskButton.addActionListener(new OpenTaskCreatorAction(appEnv));
-        createTaskButton.setFocusable(false);
         this.add(createTaskButton);
+
+        for (Component component : this.getComponents()) {
+            component.setFocusable(false);
+        }
     }
 }
