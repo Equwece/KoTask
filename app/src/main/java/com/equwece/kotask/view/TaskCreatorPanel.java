@@ -4,6 +4,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -15,13 +16,13 @@ import com.equwece.kotask.controller.SaveTaskAction;
 
 import net.miginfocom.swing.MigLayout;
 
-public class TaskCreatorPanel extends JFrame {
+public class TaskCreatorPanel extends JDialog {
 
-    private final class TaskCreatorKeyAdapter extends KeyAdapter {
+    abstract class TaskCreatorKeyAdapter extends KeyAdapter {
         private final JTextField headLineInput;
         private final JTextArea descriptionInput;
 
-        private TaskCreatorKeyAdapter(JTextField headLineInput, JTextArea descriptionInput) {
+        public TaskCreatorKeyAdapter(JTextField headLineInput, JTextArea descriptionInput) {
             this.headLineInput = headLineInput;
             this.descriptionInput = descriptionInput;
         }
@@ -46,12 +47,15 @@ public class TaskCreatorPanel extends JFrame {
     final private AppEnv appEnv;
 
     public TaskCreatorPanel(String frameName, AppEnv appEnv) {
-        super(frameName);
-        this.setFocusable(true);
+        super(appEnv.getAppWindow());
         this.appEnv = appEnv;
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JPanel contentPane = new JPanel();
 
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setModalityType(ModalityType.APPLICATION_MODAL);
+        this.setTitle(frameName);
+        this.setLocationRelativeTo(getParent());
+
+        JPanel contentPane = new JPanel();
         MigLayout currentLayout = new MigLayout("fillx");
         contentPane.setLayout(currentLayout);
 
@@ -77,10 +81,12 @@ public class TaskCreatorPanel extends JFrame {
         JScrollPane scrollPane = new JScrollPane(descriptionInput);
 
         headLineInput.addKeyListener(
-                new TaskCreatorKeyAdapter(headLineInput, descriptionInput));
+                new TaskCreatorKeyAdapter(headLineInput, descriptionInput) {
+                });
 
         descriptionInput.addKeyListener(
-                new TaskCreatorKeyAdapter(headLineInput, descriptionInput));
+                new TaskCreatorKeyAdapter(headLineInput, descriptionInput) {
+                });
 
         JPanel buttonContainer = new JPanel();
         JButton saveTask = new JButton("Save");

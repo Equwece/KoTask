@@ -14,32 +14,6 @@ import com.equwece.kotask.data.TaskItem;
 
 public class TaskEditorPanel extends TaskCreatorPanel {
 
-    private final class TaskEditorKeyAdapter extends KeyAdapter {
-        private final JTextField headLineInput;
-        private final JTextArea descriptionInput;
-
-        private TaskEditorKeyAdapter(JTextField headLineInput, JTextArea descriptionInput) {
-            this.headLineInput = headLineInput;
-            this.descriptionInput = descriptionInput;
-        }
-
-        @Override
-        public void keyTyped(KeyEvent event) {
-            switch (event.getKeyChar()) {
-                case '\n': {
-                    new UpdateTaskAction(TaskEditorPanel.this.getAppEnv(), headLineInput, descriptionInput,
-                            TaskEditorPanel.this).actionPerformed(null);
-                    break;
-                }
-                case KeyEvent.VK_ESCAPE: {
-                    TaskEditorPanel.this.dispose();
-                    break;
-                }
-            }
-
-        }
-    }
-
     final private TaskItem selectedItem;
 
     public TaskEditorPanel(String frameName, AppEnv appEnv, TaskItem selectedItem) {
@@ -61,11 +35,29 @@ public class TaskEditorPanel extends TaskCreatorPanel {
         descriptionInput.setRows(7);
         JScrollPane scrollPane = new JScrollPane(descriptionInput);
 
+        TaskCreatorPanel.TaskCreatorKeyAdapter taskEditorKeyAdapter = new TaskCreatorPanel.TaskCreatorKeyAdapter(
+                headLineInput, descriptionInput) {
+            @Override
+            public void keyTyped(KeyEvent event) {
+                switch (event.getKeyChar()) {
+                    case '\n': {
+                        new UpdateTaskAction(TaskEditorPanel.this.getAppEnv(), headLineInput, descriptionInput,
+                                TaskEditorPanel.this)
+                                .actionPerformed(null);
+                        break;
+                    }
+                    case KeyEvent.VK_ESCAPE: {
+                        TaskEditorPanel.this.dispose();
+                        break;
+                    }
+                }
+            }
+        };
         headLineInput.addKeyListener(
-                new TaskEditorKeyAdapter(headLineInput, descriptionInput));
+                taskEditorKeyAdapter);
 
         descriptionInput.addKeyListener(
-                new TaskEditorKeyAdapter(headLineInput, descriptionInput));
+                taskEditorKeyAdapter);
 
         JPanel buttonContainer = new JPanel();
         JButton saveTask = new JButton("Save");
@@ -82,6 +74,7 @@ public class TaskEditorPanel extends TaskCreatorPanel {
         this.getContentPane().add(headLineInput, "growx, wrap");
         this.getContentPane().add(scrollPane, "grow, wrap");
         this.getContentPane().add(buttonContainer);
+
         return this;
     }
 
