@@ -2,6 +2,7 @@ package com.equwece.kotask.controller;
 
 import java.awt.event.ActionEvent;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,8 +43,7 @@ final public class SaveTaskAction extends AbstractAction {
                             UUID.randomUUID(),
                             Optional.of(descriptionInput.getText()),
                             TaskStatus.ACTIVE,
-                            LocalDateTime.now(),
-                            Optional.empty());
+                            LocalDateTime.now());
                     appEnv.getTaskController().createItem(newItem);
                     return null;
                 }

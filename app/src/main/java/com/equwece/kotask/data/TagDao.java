@@ -7,13 +7,15 @@ import java.util.UUID;
 public interface TagDao {
     List<Tag> getAll();
 
-    Optional<Tag> get(UUID id);
+    Optional<Tag> get(String title);
 
-    UUID create(Tag tag);
+    void create(Tag tag);
 
-    void delete(UUID id);
+    void delete(String title);
 
-    void edit(UUID id, Tag tag);
+    void edit(String title, Tag tag);
     
     List<Tag> getTaskTags(UUID taskId);
+
+    void addTagToTask(TaskItem task, Tag tag);
 }

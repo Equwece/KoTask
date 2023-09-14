@@ -40,8 +40,7 @@ final public class UpdateTaskAction extends AbstractAction {
                             selectedItem.getId(),
                             Optional.of(descriptionInput.getText()),
                             selectedItem.getTaskStatus(),
-                            selectedItem.getCreationDate(),
-                            selectedItem.getTags());
+                            selectedItem.getCreationDate());
                     appEnv.getTaskController().editItem(updatedItem.getId(), updatedItem);
                     return null;
                 }

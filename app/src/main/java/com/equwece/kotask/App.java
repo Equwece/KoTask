@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -115,7 +116,7 @@ public class App {
                     LocalDateTime creationDate = LocalDateTime.parse(creationDateStr);
 
                     return new TaskItem(rs.getString("head_line"), UUID.fromString(rs.getString("id")),
-                            description, taskStatus, creationDate, Optional.empty());
+                            description, taskStatus, creationDate, new ArrayList<>());
                 });
 
         setupDB(appDirPath, jdbi);

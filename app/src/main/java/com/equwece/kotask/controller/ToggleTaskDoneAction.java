@@ -34,8 +34,7 @@ final public class ToggleTaskDoneAction extends AbstractAction {
                         taskItem.getId(),
                         taskItem.getDescription(),
                         (itemIsDone ? TaskStatus.ACTIVE : TaskStatus.DONE),
-                        taskItem.getCreationDate(),
-                        taskItem.getTags());
+                        taskItem.getCreationDate());
                 ToggleTaskDoneAction.this.appEnv.getTaskController().editItem(newItem.getId(), newItem);
                 return null;
             }

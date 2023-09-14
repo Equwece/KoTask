@@ -1,5 +1,6 @@
 package com.equwece.kotask.data;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,25 +26,38 @@ final public class SqliteTagDao implements TagDao {
     }
 
     @Override
-    public Optional<Tag> get(UUID id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+    public Optional<Tag> get(String title) {
+        Optional<Tag> tag = this.jdbi.withHandle(handle -> {
+            return handle.createQuery(
+                    "SELECT * FROM \"tag\" WHERE title = :title")
+                    .bind("title", title)
+                    .mapTo(Tag.class)
+                    .findOne();
+        });
+        return tag;
     }
 
     @Override
-    public UUID create(Tag tag) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'create'");
+    public void create(Tag tag) {
+        int tagColorRgb = tag.getColor().orElse(Color.GREEN).getRGB();
+        this.jdbi.withHandle(handle -> {
+            return handle.createUpdate(
+                    "INSERT INTO \"tag\" (title, color) "
+                            + "VALUES (:title, :color)")
+                    .bind("title", tag.getTitle())
+                    .bind("color", tagColorRgb)
+                    .execute();
+        });
     }
 
     @Override
-    public void delete(UUID id) {
+    public void delete(String title) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'delete'");
     }
 
     @Override
-    public void edit(UUID id, Tag tag) {
+    public void edit(String title, Tag tag) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'edit'");
     }
@@ -64,6 +78,18 @@ final public class SqliteTagDao implements TagDao {
                     .list();
         });
         return tags;
+    }
+
+    @Override
+    public void addTagToTask(TaskItem task, Tag tag) {
+        this.jdbi.withHandle(handle -> {
+            return handle.createUpdate(
+                    "INSERT INTO \"task_tag\" (task_id, tag_title) "
+                            + "VALUES (:task_id, :tag_title)")
+                    .bind("task_id", task.getId())
+                    .bind("tag_title", tag.getTitle())
+                    .execute();
+        });
     }
 
 }

@@ -35,16 +35,16 @@ public class TaskItemComponent extends JPanel {
             taskCheckBox.setFont(font.deriveFont(attributes));
         }
         this.add(taskCheckBox);
-        this.add(Box.createRigidArea(new Dimension(50,0)));
+        this.add(Box.createRigidArea(new Dimension(50, 0)));
 
-        for (Tag tag : this.taskItem.getTags().orElse(new ArrayList<>())) {
+        for (Tag tag : this.taskItem.getTags()) {
             JLabel tagLabel = new JLabel(tag.getTitle());
             tagLabel.setName("taskTag");
             if (!tag.getColor().isEmpty()) {
                 tagLabel.setForeground(tag.getColor().get());
             }
             this.add(tagLabel);
-            this.add(Box.createRigidArea(new Dimension(10,0)));
+            this.add(Box.createRigidArea(new Dimension(10, 0)));
         }
     }
 

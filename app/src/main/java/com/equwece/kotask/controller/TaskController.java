@@ -37,6 +37,12 @@ final public class TaskController {
 
     public void createItem(TaskItem item) {
         this.getTaskDao().create(item);
+        for (Tag tag : item.getTags()) {
+            if (this.getTagDao().get(tag.getTitle()).isEmpty()) {
+                this.getTagDao().create(tag);
+            }
+            this.getTagDao().addTagToTask(item, tag);
+        }
     }
 
     public void editItem(UUID itemId, TaskItem newItem) {
