@@ -28,12 +28,14 @@ final public class ToggleTaskDoneAction extends AbstractAction {
             protected Void doInBackground() throws Exception {
                 Boolean itemIsDone = ToggleTaskDoneAction.this.selectedItem.getTaskItem()
                         .getTaskStatus() == TaskStatus.DONE;
+                TaskItem taskItem = selectedItem.getTaskItem();
                 TaskItem newItem = new TaskItem(
-                        selectedItem.getTaskItem().getHeadLine(),
-                        selectedItem.getTaskItem().getId(),
-                        selectedItem.getTaskItem().getDescription(),
+                        taskItem.getHeadLine(),
+                        taskItem.getId(),
+                        taskItem.getDescription(),
                         (itemIsDone ? TaskStatus.ACTIVE : TaskStatus.DONE),
-                        selectedItem.getTaskItem().getCreationDate());
+                        taskItem.getCreationDate(),
+                        taskItem.getTags());
                 ToggleTaskDoneAction.this.appEnv.getTaskController().editItem(newItem.getId(), newItem);
                 return null;
             }

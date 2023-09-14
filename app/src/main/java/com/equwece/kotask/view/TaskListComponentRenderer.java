@@ -12,21 +12,22 @@ public class TaskListComponentRenderer implements ListCellRenderer<TaskItemCompo
     @Override
     public Component getListCellRendererComponent(JList<? extends TaskItemComponent> list, TaskItemComponent value,
             int index, boolean isSelected, boolean cellHasFocus) {
+        Color bgColor;
+        Color fgColor;
         if (isSelected) {
-            Color selectedBackgroundColor = (Color) UIManager.get("List.selectionBackground");
-            value.setBackground(selectedBackgroundColor);
+            bgColor = (Color) UIManager.get("List.selectionBackground");
 
-            Color selectedForegroundColor = (Color) UIManager.get("List.selectionForeground");
-            for (Component comp : value.getComponents()) {
-                comp.setForeground(selectedForegroundColor);
-            }
+            fgColor = (Color) UIManager.get("List.selectionForeground");
         } else {
-            Color backgroundColor = (Color) UIManager.get("List.background");
-            value.setBackground(backgroundColor);
+            bgColor = (Color) UIManager.get("List.background");
 
-            Color foregroundColor = (Color) UIManager.get("List.foreground");
-            for (Component comp : value.getComponents()) {
-                comp.setForeground(foregroundColor);
+            fgColor = (Color) UIManager.get("List.foreground");
+        }
+        value.setBackground(bgColor);
+
+        for (Component comp : value.getComponents()) {
+            if (comp.getName() != "taskTag") {
+                comp.setForeground(fgColor);
             }
         }
 

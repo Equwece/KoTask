@@ -12,9 +12,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.jdbi.v3.core.Jdbi;
+import java.awt.Color;
 
 import com.equwece.kotask.controller.TaskController;
+import com.equwece.kotask.data.SqliteTagDao;
 import com.equwece.kotask.data.SqliteTaskDao;
+import com.equwece.kotask.data.Tag;
+import com.equwece.kotask.data.TagDao;
 import com.equwece.kotask.data.TaskDao;
 import com.equwece.kotask.data.TaskItem;
 import com.equwece.kotask.data.TaskItem.TaskStatus;
@@ -60,11 +64,11 @@ public class App {
                 handle.execute(
                         "CREATE TABLE \"tag\" ("
                                 + "\"title\" TEXT NOT NULL,"
-                                + "\"color\" TEXT,"
+                                + "\"color\" INT,"
                                 + "PRIMARY KEY(\"title\"));");
 
                 handle.execute(
-                        "CREATE TABLE \"task_title\" ("
+                        "CREATE TABLE \"task_tag\" ("
                                 + "\"task_id\" TEXT REFERENCES task(id),"
                                 + "\"tag_title\" TEXT REFERENCES tag(title));");
                 return null;
@@ -78,6 +82,13 @@ public class App {
         Path appDirPath = setupAppDir();
 
         Jdbi jdbi = Jdbi.create(String.format("jdbc:sqlite:%s", appDirPath.resolve("cache.db").toString()));
+
+        jdbi.registerRowMapper(Tag.class,
+                (rs, ctx) -> {
+                    int tagColorRgb = rs.getInt("color");
+                    Color tagColor = new Color(tagColorRgb);
+                    return new Tag(Optional.of(tagColor), rs.getString("title"));
+                });
 
         jdbi.registerRowMapper(TaskItem.class,
                 (rs, ctx) -> {
@@ -104,14 +115,15 @@ public class App {
                     LocalDateTime creationDate = LocalDateTime.parse(creationDateStr);
 
                     return new TaskItem(rs.getString("head_line"), UUID.fromString(rs.getString("id")),
-                            description, taskStatus, creationDate);
+                            description, taskStatus, creationDate, Optional.empty());
                 });
 
         setupDB(appDirPath, jdbi);
 
         TaskDao taskDao = new SqliteTaskDao(jdbi);
-        TaskController taskController = new TaskController(taskDao);
-        AppEnv appEnv = new AppEnv(taskDao, taskController);
+        TagDao tagDao = new SqliteTagDao(jdbi);
+        TaskController taskController = new TaskController(taskDao, tagDao);
+        AppEnv appEnv = new AppEnv(taskDao, tagDao, taskController);
 
         // Schedule a job for the event-dispatching thread:
         // creating and showing this application's GUI.

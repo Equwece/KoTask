@@ -34,12 +34,14 @@ final public class UpdateTaskAction extends AbstractAction {
             new SwingWorker<Void, Void>() {
                 @Override
                 protected Void doInBackground() throws Exception {
+                    TaskItem selectedItem = taskEditorPanel.getSelectedItem();
                     TaskItem updatedItem = new TaskItem(
                             headLineInput.getText(),
-                            taskEditorPanel.getSelectedItem().getId(),
+                            selectedItem.getId(),
                             Optional.of(descriptionInput.getText()),
-                            taskEditorPanel.getSelectedItem().getTaskStatus(),
-                            taskEditorPanel.getSelectedItem().getCreationDate());
+                            selectedItem.getTaskStatus(),
+                            selectedItem.getCreationDate(),
+                            selectedItem.getTags());
                     appEnv.getTaskController().editItem(updatedItem.getId(), updatedItem);
                     return null;
                 }

@@ -42,7 +42,8 @@ final public class SaveTaskAction extends AbstractAction {
                             UUID.randomUUID(),
                             Optional.of(descriptionInput.getText()),
                             TaskStatus.ACTIVE,
-                            LocalDateTime.now());
+                            LocalDateTime.now(),
+                            Optional.empty());
                     appEnv.getTaskController().createItem(newItem);
                     return null;
                 }
