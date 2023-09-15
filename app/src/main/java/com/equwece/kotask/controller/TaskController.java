@@ -1,5 +1,6 @@
 package com.equwece.kotask.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,6 +48,31 @@ final public class TaskController {
 
     public void editItem(UUID itemId, TaskItem newItem) {
         this.getTaskDao().edit(itemId, newItem);
+        List<String> currentTaskTagsTitles = new ArrayList<>(this
+                .getTagDao()
+                .getTaskTags(itemId)
+                .stream()
+                .map(
+                        t -> t.getTitle())
+                .toList());
+
+        for (Tag tag : newItem.getTags()) {
+            if (currentTaskTagsTitles.contains(tag.getTitle())) {
+                currentTaskTagsTitles.remove(tag.getTitle());
+            } else {
+                if (this.getTagDao().get(tag.getTitle()).isEmpty()) {
+                    this.getTagDao().create(tag);
+                }
+                this.getTagDao().addTagToTask(newItem, tag);
+            }
+        }
+
+        for (String tagTitle : currentTaskTagsTitles) {
+            if (this.getTagDao().getTagTasks(tagTitle).size() <= 1) {
+                this.getTagDao().delete(tagTitle);
+            }
+            this.getTagDao().deleteTaskTagRelation(tagTitle, newItem.getId());
+        }
     }
 
     public void deleteItem(UUID itemId) {

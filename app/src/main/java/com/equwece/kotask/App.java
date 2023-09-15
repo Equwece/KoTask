@@ -70,8 +70,9 @@ public class App {
 
                 handle.execute(
                         "CREATE TABLE \"task_tag\" ("
-                                + "\"task_id\" TEXT REFERENCES task(id),"
-                                + "\"tag_title\" TEXT REFERENCES tag(title));");
+                                + "\"task_id\" TEXT NOT NULL REFERENCES task(id) ON DELETE CASCADE,"
+                                + "\"tag_title\" TEXT NOT NULL REFERENCES tag(title) ON DELETE CASCADE,"
+                                + "PRIMARY KEY(\"task_id\", \"tag_title\"));");
                 return null;
             });
 

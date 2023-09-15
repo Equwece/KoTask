@@ -3,7 +3,6 @@ package com.equwece.kotask.view;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.font.TextAttribute;
-import java.util.ArrayList;
 import java.util.Map;
 
 import javax.swing.Box;
@@ -35,7 +34,7 @@ public class TaskItemComponent extends JPanel {
             taskCheckBox.setFont(font.deriveFont(attributes));
         }
         this.add(taskCheckBox);
-        this.add(Box.createRigidArea(new Dimension(50, 0)));
+        this.add(Box.createHorizontalGlue());
 
         for (Tag tag : this.taskItem.getTags()) {
             JLabel tagLabel = new JLabel(tag.getTitle());

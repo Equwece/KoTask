@@ -52,8 +52,10 @@ final public class SqliteTagDao implements TagDao {
 
     @Override
     public void delete(String title) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+        this.jdbi.withHandle(handle -> {
+            return handle.createUpdate("DELETE FROM \"tag\" WHERE title = :title")
+                    .bind("title", title).execute();
+        });
     }
 
     @Override
@@ -81,6 +83,24 @@ final public class SqliteTagDao implements TagDao {
     }
 
     @Override
+    public List<TaskItem> getTagTasks(String tagTitle) {
+        List<TaskItem> tags = this.jdbi.withHandle(handle -> {
+            return handle.select(
+                    "SELECT *"
+                            + " FROM task"
+                            + " INNER JOIN task_tag"
+                            + "     ON task.id = task_tag.task_id"
+                            + " INNER JOIN tag"
+                            + "     ON tag.title == task_tag.tag_title"
+                            + " WHERE tag.title = :tag_title;")
+                    .bind("tag_title", tagTitle)
+                    .mapTo(TaskItem.class)
+                    .list();
+        });
+        return tags;
+    }
+
+    @Override
     public void addTagToTask(TaskItem task, Tag tag) {
         this.jdbi.withHandle(handle -> {
             return handle.createUpdate(
@@ -88,6 +108,17 @@ final public class SqliteTagDao implements TagDao {
                             + "VALUES (:task_id, :tag_title)")
                     .bind("task_id", task.getId())
                     .bind("tag_title", tag.getTitle())
+                    .execute();
+        });
+    }
+
+    @Override
+    public void deleteTaskTagRelation(String tagTitle, UUID taskId) {
+        this.jdbi.withHandle(handle -> {
+            return handle.createUpdate("DELETE FROM \"task_tag\" WHERE "
+                    + "tag_title = :tag_title AND task_id = :task_id")
+                    .bind("tag_title", tagTitle)
+                    .bind("task_id", taskId)
                     .execute();
         });
     }
