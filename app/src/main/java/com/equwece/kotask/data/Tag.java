@@ -19,4 +19,9 @@ final public class Tag {
     public Optional<Color> getColor() {
         return color;
     }
+
+    @Override
+    public String toString() {
+        return "Tag [title=" + title + "]";
+    }
 }

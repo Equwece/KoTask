@@ -26,7 +26,9 @@ public class AppWindow extends JFrame {
 
         JPanel contentPane = new JPanel();
 
-        MigLayout mainLayout = new MigLayout("fillx");
+        MigLayout mainLayout = new MigLayout("fillx",
+                "[15%!,grow][]",
+                "");
 
         contentPane.setLayout(mainLayout);
 
@@ -53,7 +55,10 @@ public class AppWindow extends JFrame {
 
         ToolBar toolBar = new ToolBar(appEnv);
 
-        contentPane.add(toolBar, "wrap");
+        SideBar sideBar = new SideBar(appEnv);
+
+        contentPane.add(toolBar, "span");
+        contentPane.add(sideBar);
         contentPane.add(taskList, "grow");
 
         this.getContentPane().add(contentPane);

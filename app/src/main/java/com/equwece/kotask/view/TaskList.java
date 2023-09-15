@@ -104,7 +104,7 @@ public class TaskList extends JList<TaskItemComponent> {
                     public void mouseClicked(MouseEvent e) {
                         if (e.getClickCount() == 2) {
                             TaskItemComponent selectedItem = this.getSelectedComponent(e);
-                            new OpenTaskEditorAction(TaskList.this.appEnv, selectedItem);
+                            new OpenTaskEditorAction(TaskList.this.appEnv, selectedItem).actionPerformed(null);
                         }
                     }
 
