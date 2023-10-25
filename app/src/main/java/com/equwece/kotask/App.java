@@ -73,6 +73,22 @@ public class App {
                                 + "\"task_id\" TEXT NOT NULL REFERENCES task(id) ON DELETE CASCADE,"
                                 + "\"tag_title\" TEXT NOT NULL REFERENCES tag(title) ON DELETE CASCADE,"
                                 + "PRIMARY KEY(\"task_id\", \"tag_title\"));");
+
+                handle.execute(
+                        "CREATE TABLE \"task_subtask\" ("
+                                + "\"task_id\" TEXT NOT NULL REFERENCES task(id) ON DELETE CASCADE,"
+                                + "\"subtask_id\" TEXT NOT NULL REFERENCES task(id) ON DELETE CASCADE,"
+                                + "PRIMARY KEY(\"task_id\", \"subtask_id\"));");
+
+                handle.createUpdate(
+                        "INSERT INTO \"task\" (id, head_line, description, status, creation_date) "
+                                + "VALUES (:id, :head_line, :description, :status, :creation_date)")
+                        .bind("id", UUID.fromString("00000000-0000-0000-0000-000000000000"))
+                        .bind("head_line", "root")
+                        .bind("description", "root")
+                        .bind("status", TaskStatus.ACTIVE)
+                        .bind("creation_date", LocalDateTime.now().toString())
+                        .execute();
                 return null;
             });
 

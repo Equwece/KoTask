@@ -14,4 +14,10 @@ public interface TaskDao {
     void delete(UUID id);
 
     void edit(UUID id, TaskItem item);
+
+    List<TaskItem> getTaskSubtasks(UUID id);
+
+    void addSubtask(UUID taskId, UUID subtaskId);
+
+    TaskItem getRootTask();
 }

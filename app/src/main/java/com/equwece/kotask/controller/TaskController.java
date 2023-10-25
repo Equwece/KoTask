@@ -31,13 +31,16 @@ final public class TaskController {
         for (int i = 0; i < items.size(); i++) {
             TaskItem task = items.get(i);
             List<Tag> tags = this.getTagDao().getTaskTags(task.getId());
-            items.set(i, (task.setTaskTags(tags)));
+            List<TaskItem> subtasks = this.getTaskDao().getTaskSubtasks(task.getId());
+            items.set(i, (task.setTaskTags(tags).setTaskSubtasks(subtasks)));
         }
         return items;
     }
 
     public void createItem(TaskItem item) {
+        TaskItem root = this.getTaskDao().getRootTask();
         this.getTaskDao().create(item);
+        this.getTaskDao().addSubtask(root.getId(), item.getId());
         for (Tag tag : item.getTags()) {
             if (this.getTagDao().get(tag.getTitle()).isEmpty()) {
                 this.getTagDao().create(tag);

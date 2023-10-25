@@ -20,6 +20,18 @@ final public class TaskItem {
     final private TaskStatus taskStatus;
     final private LocalDateTime creationDate;
     final private List<Tag> tags;
+    final private List<TaskItem> subtasks;
+
+    public TaskItem(String headLine, UUID id, Optional<String> description, TaskStatus taskStatus,
+            LocalDateTime creationDate, List<Tag> tags, List<TaskItem> subtasks) {
+        this.headLine = headLine;
+        this.id = id;
+        this.description = description;
+        this.taskStatus = taskStatus;
+        this.creationDate = creationDate;
+        this.tags = tags;
+        this.subtasks = subtasks;
+    }
 
     public TaskItem(String headLine, UUID id, Optional<String> description, TaskStatus taskStatus,
             LocalDateTime creationDate, List<Tag> tags) {
@@ -29,6 +41,7 @@ final public class TaskItem {
         this.taskStatus = taskStatus;
         this.creationDate = creationDate;
         this.tags = tags;
+        this.subtasks = new ArrayList<>();
     }
 
     public TaskItem(String headLine, UUID id, Optional<String> description, TaskStatus taskStatus,
@@ -39,6 +52,7 @@ final public class TaskItem {
         this.taskStatus = taskStatus;
         this.creationDate = creationDate;
         this.tags = this.parseTaskTags(description.orElse(""));
+        this.subtasks = new ArrayList<>();
     }
 
     public List<Tag> parseTaskTags(String description) {
@@ -81,6 +95,12 @@ final public class TaskItem {
     public TaskItem setTaskTags(List<Tag> newTags) {
         return new TaskItem(
                 headLine, id, description, taskStatus, creationDate, newTags);
+
+    }
+
+    public TaskItem setTaskSubtasks(List<TaskItem> newSubtasks) {
+        return new TaskItem(
+                headLine, id, description, taskStatus, creationDate, tags, newSubtasks);
 
     }
 }

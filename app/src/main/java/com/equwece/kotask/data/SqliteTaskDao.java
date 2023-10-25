@@ -71,4 +71,45 @@ final public class SqliteTaskDao implements TaskDao {
         });
     }
 
+    @Override
+    public List<TaskItem> getTaskSubtasks(UUID taskId) {
+        List<TaskItem> tasks = this.jdbi.withHandle(handle -> {
+            return handle.select(
+                    "SELECT *"
+                            + " FROM task as subtask"
+                            + " INNER JOIN task_subtask"
+                            + "     ON subtask.id = task_subtask.task_id"
+                            + " INNER JOIN task"
+                            + "     ON task.id == task_subtask.subtask_id"
+                            + " WHERE task_id = :task_id;")
+                    .bind("task_id", taskId)
+                    .mapTo(TaskItem.class)
+                    .list();
+        });
+        return tasks;
+    }
+
+    @Override
+    public void addSubtask(UUID taskId, UUID subtaskId) {
+        this.jdbi.withHandle(handle -> {
+            return handle.createUpdate(
+                    "INSERT INTO \"task_subtask\" (task_id, subtask_id) "
+                            + "VALUES (:task_id, :subtask_id)")
+                    .bind("task_id", taskId)
+                    .bind("subtask_id", subtaskId)
+                    .execute();
+        });
+    }
+
+    public TaskItem getRootTask() {
+        TaskItem root = this.jdbi.withHandle(handle -> {
+            return handle.select(
+                    "SELECT * FROM \"task\" WHERE task.id = '00000000-0000-0000-0000-000000000000'")
+                    .mapTo(TaskItem.class)
+                    .one();
+        });
+        return root;
+
+    }
+
 }
