@@ -55,6 +55,10 @@ final public class TaskItem {
         this.subtasks = new ArrayList<>();
     }
 
+    public List<TaskItem> getSubtasks() {
+        return subtasks;
+    }
+
     public List<Tag> parseTaskTags(String description) {
         Pattern pattern = Pattern.compile("\\+[a-zA-Z0-9]+");
         Matcher matcher = pattern.matcher(description);

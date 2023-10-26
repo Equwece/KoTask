@@ -4,9 +4,11 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JList;
 import javax.swing.KeyStroke;
@@ -134,8 +136,9 @@ public class TaskList extends JList<TaskItemComponent> {
 
     public void updateTaskList(List<TaskItem> newTaskList) {
         sortTaskListByDate(newTaskList);
-        TaskItemComponent[] newTaskComponents = this.constructTaskComponents(newTaskList);
-        this.setListData(newTaskComponents);
+        // TaskItemComponent[] newTaskComponents =
+        // this.constructTaskComponents(newTaskList);
+        this.setListData(this.constructTaskComponentVector(newTaskList));
         this.setSelectedIndex(0);
     }
 
@@ -150,5 +153,16 @@ public class TaskList extends JList<TaskItemComponent> {
             taskItems[i] = new TaskItemComponent(items.get(i));
         }
         return taskItems;
+    }
+
+    public Vector<TaskItemComponent> constructTaskComponentVector(List<TaskItem> items) {
+        Vector<TaskItemComponent> flatTaskList = new Vector<>();
+        items.forEach(t -> this.flatTaskTree(flatTaskList, t, 0));
+        return flatTaskList;
+    }
+
+    public void flatTaskTree(Vector<TaskItemComponent> result, TaskItem task, int nestingLevel) {
+        result.add(new TaskItemComponent(task, nestingLevel));
+        task.getSubtasks().forEach(t -> this.flatTaskTree(result, t, nestingLevel + 1));
     }
 }
