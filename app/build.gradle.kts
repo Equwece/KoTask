@@ -30,6 +30,8 @@ dependencies {
 
     implementation("org.slf4j:slf4j-simple:2.0.7")
 
+    implementation("com.formdev:flatlaf-intellij-themes:3.2.5")
+
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

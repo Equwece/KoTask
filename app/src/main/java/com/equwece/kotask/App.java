@@ -26,6 +26,9 @@ import com.equwece.kotask.data.TaskItem.TaskStatus;
 import com.equwece.kotask.view.AppWindow;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatDraculaIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme;
 
 public class App {
     /**
@@ -146,7 +149,7 @@ public class App {
         // Schedule a job for the event-dispatching thread:
         // creating and showing this application's GUI.
         FlatLaf.registerCustomDefaultsSource("themes");
-        FlatDarkLaf.setup();
+        FlatOneDarkIJTheme.setup();
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI(appEnv);

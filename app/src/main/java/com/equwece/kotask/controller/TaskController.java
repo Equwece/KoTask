@@ -3,6 +3,8 @@ package com.equwece.kotask.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import com.equwece.kotask.data.Tag;
 import com.equwece.kotask.data.TagDao;
@@ -27,26 +29,34 @@ final public class TaskController {
     }
 
     public List<TaskItem> getAllItems() {
-        List<TaskItem> items = this.getTaskDao().getAll();
-        for (int i = 0; i < items.size(); i++) {
-            TaskItem task = items.get(i);
-            List<Tag> tags = this.getTagDao().getTaskTags(task.getId());
-            List<TaskItem> subtasks = this.getTaskDao().getTaskSubtasks(task.getId());
-            items.set(i, (task.setTaskTags(tags).setTaskSubtasks(subtasks)));
-        }
-        return items;
+        List<TaskItem> firstLevelTasks = this.getTaskDao()
+                .getTaskSubtasks(UUID.fromString("00000000-0000-0000-0000-000000000000")).stream()
+                .map(this::finishTaskItem).collect(Collectors.toList());
+        ;
+        return firstLevelTasks;
+    }
+
+    public TaskItem finishTaskItem(TaskItem task) {
+        List<Tag> tags = this.getTagDao().getTaskTags(task.getId());
+        List<TaskItem> subtasks = this.getTaskDao().getTaskSubtasks(task.getId()).stream().map(this::finishTaskItem)
+                .collect(Collectors.toList());
+        return task.setTaskTags(tags).setTaskSubtasks(subtasks);
     }
 
     public void createItem(TaskItem item) {
-        TaskItem root = this.getTaskDao().getRootTask();
+        this.createItem(item, UUID.fromString("00000000-0000-0000-0000-000000000000"));
+    }
+
+    public void createItem(TaskItem item, UUID ascendantId) {
         this.getTaskDao().create(item);
-        this.getTaskDao().addSubtask(root.getId(), item.getId());
+        this.getTaskDao().addSubtask(ascendantId, item.getId());
         for (Tag tag : item.getTags()) {
             if (this.getTagDao().get(tag.getTitle()).isEmpty()) {
                 this.getTagDao().create(tag);
             }
             this.getTagDao().addTagToTask(item, tag);
         }
+
     }
 
     public void editItem(UUID itemId, TaskItem newItem) {
