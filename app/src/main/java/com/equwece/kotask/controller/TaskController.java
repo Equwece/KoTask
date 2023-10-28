@@ -83,7 +83,6 @@ final public class TaskController {
             if (this.getTagDao().getTagTasks(tagTitle).size() <= 1) {
                 this.getTagDao().delete(tagTitle);
             }
-            this.getTagDao().deleteTaskTagRelation(tagTitle, newItem.getId());
         }
     }
 

@@ -54,7 +54,7 @@ public class AppWindow extends JFrame {
 
         ToolBar toolBar = new ToolBar(appEnv);
 
-        contentPane.add(toolBar, "wrap, gapx 0 0");
+        contentPane.add(toolBar, "grow, wrap, gapx 0 0");
         contentPane.add(taskList, "grow, gapx 0 0");
 
         this.getContentPane().add(contentPane);

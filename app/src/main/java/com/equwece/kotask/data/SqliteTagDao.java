@@ -111,16 +111,4 @@ final public class SqliteTagDao implements TagDao {
                     .execute();
         });
     }
-
-    @Override
-    public void deleteTaskTagRelation(String tagTitle, UUID taskId) {
-        this.jdbi.withHandle(handle -> {
-            return handle.createUpdate("DELETE FROM \"task_tag\" WHERE "
-                    + "tag_title = :tag_title AND task_id = :task_id")
-                    .bind("tag_title", tagTitle)
-                    .bind("task_id", taskId)
-                    .execute();
-        });
-    }
-
 }

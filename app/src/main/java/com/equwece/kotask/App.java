@@ -3,6 +3,7 @@
  */
 package com.equwece.kotask;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,12 +16,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.swing.UIManager;
-
 import org.jdbi.v3.core.Jdbi;
 import org.sqlite.SQLiteConfig;
-
-import java.awt.Color;
 
 import com.equwece.kotask.controller.TaskController;
 import com.equwece.kotask.data.SqliteTagDao;
@@ -31,11 +28,8 @@ import com.equwece.kotask.data.TaskDao;
 import com.equwece.kotask.data.TaskItem;
 import com.equwece.kotask.data.TaskItem.TaskStatus;
 import com.equwece.kotask.view.AppWindow;
-import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
-import com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatDraculaIJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatNordIJTheme;
 
 public class App {
     /**
@@ -161,7 +155,8 @@ public class App {
         // Schedule a job for the event-dispatching thread:
         // creating and showing this application's GUI.
         FlatLaf.registerCustomDefaultsSource("themes");
-        FlatOneDarkIJTheme.setup();
+        FlatNordIJTheme.setup();
+        // FlatOneDarkIJTheme.setup();
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI(appEnv);

@@ -20,6 +20,4 @@ public interface TagDao {
     void addTagToTask(TaskItem task, Tag tag);
 
     List<TaskItem> getTagTasks(String tagTitle);
-
-    void deleteTaskTagRelation(String tagTitle, UUID taskId);
 }
