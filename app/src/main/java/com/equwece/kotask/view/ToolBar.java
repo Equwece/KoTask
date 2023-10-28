@@ -20,7 +20,7 @@ final public class ToolBar extends JPanel {
         MigLayout toolLayout = new MigLayout();
         this.setLayout(toolLayout);
 
-        JButton createTaskButton = new JButton("Create task");
+        JButton createTaskButton = new JButton("\uFF0B");
         createTaskButton.addActionListener(new OpenTaskCreatorAction(appEnv));
         this.add(createTaskButton);
 

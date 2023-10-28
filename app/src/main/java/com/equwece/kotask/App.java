@@ -7,12 +7,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.swing.UIManager;
+
 import org.jdbi.v3.core.Jdbi;
+import org.sqlite.SQLiteConfig;
+
 import java.awt.Color;
 
 import com.equwece.kotask.controller.TaskController;
@@ -98,11 +105,16 @@ public class App {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, SQLException {
 
         Path appDirPath = setupAppDir();
 
-        Jdbi jdbi = Jdbi.create(String.format("jdbc:sqlite:%s", appDirPath.resolve("cache.db").toString()));
+        SQLiteConfig sqLiteConfig = new SQLiteConfig();
+        sqLiteConfig.enforceForeignKeys(true); // Enable sqlite3 foreign key support
+        Connection connection = DriverManager.getConnection(
+                String.format("jdbc:sqlite:%s", appDirPath.resolve("cache.db").toString()),
+                sqLiteConfig.toProperties());
+        Jdbi jdbi = Jdbi.create(connection);
 
         jdbi.registerRowMapper(Tag.class,
                 (rs, ctx) -> {
