@@ -87,7 +87,7 @@ public class App {
                 handle.createUpdate(
                         "INSERT INTO \"task\" (id, head_line, description, status, creation_date) "
                                 + "VALUES (:id, :head_line, :description, :status, :creation_date)")
-                        .bind("id", UUID.fromString("00000000-0000-0000-0000-000000000000"))
+                        .bind("id", TaskController.ROOT_TASK_ID)
                         .bind("head_line", "root")
                         .bind("description", "root")
                         .bind("status", TaskStatus.ACTIVE)

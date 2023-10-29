@@ -51,6 +51,7 @@ public class TaskItemComponent extends JPanel {
             if (!tag.getColor().isEmpty()) {
                 tagLabel.setForeground(tag.getColor().get());
             }
+            tagLabel.setForeground(tag.getColor().orElse(Color.red));
             this.add(tagLabel);
             this.add(Box.createRigidArea(new Dimension(10, 0)));
         }

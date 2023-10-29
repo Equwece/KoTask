@@ -5,6 +5,7 @@ import javax.swing.JPopupMenu;
 
 import com.equwece.kotask.AppEnv;
 import com.equwece.kotask.controller.DeleteTaskAction;
+import com.equwece.kotask.controller.OpenTaskCreatorAction;
 import com.equwece.kotask.controller.OpenTaskEditorAction;
 import com.equwece.kotask.controller.ToggleTaskDoneAction;
 import com.equwece.kotask.data.TaskItem.TaskStatus;
@@ -18,6 +19,11 @@ public class TaskContextMenu extends JPopupMenu {
         this.appEnv = appEnv;
         this.selectedItem = selectedItem;
         Boolean itemIsDone = selectedItem.getTaskItem().getTaskStatus() == TaskStatus.DONE;
+
+        JMenuItem createSubtask = new JMenuItem("Create a subtask");
+        createSubtask.addActionListener(new OpenTaskCreatorAction(this.appEnv,
+                TaskContextMenu.this.selectedItem.getTaskItem().getId()));
+        this.add(createSubtask);
 
         JMenuItem toggleDone = new JMenuItem(String.format("Mark as %s",
                 itemIsDone ? "active" : "done"));

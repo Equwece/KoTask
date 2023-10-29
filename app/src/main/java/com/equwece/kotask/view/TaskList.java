@@ -4,7 +4,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -13,6 +12,8 @@ import java.util.Vector;
 import javax.swing.JList;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+
+import org.slf4j.LoggerFactory;
 
 import com.equwece.kotask.AppEnv;
 import com.equwece.kotask.controller.DeleteTaskAction;
@@ -50,7 +51,6 @@ public class TaskList extends JList<TaskItemComponent> {
 
                             case 'e': {
                                 TaskItemComponent selectedItem = getSelectedItem();
-                                // TODO: Bad pattern, pass null to action listener's method
                                 new OpenTaskEditorAction(TaskList.this.appEnv, selectedItem).actionPerformed(null);
                                 break;
                             }
@@ -73,6 +73,18 @@ public class TaskList extends JList<TaskItemComponent> {
                                 TaskItemComponent selectedItem = getSelectedItem();
                                 // TODO: Bad pattern, pass null to action listener's method
                                 new ToggleTaskDoneAction(TaskList.this.appEnv, selectedItem).actionPerformed(null);
+                                break;
+                            }
+                            case 's': {
+                                // TODO: Bad pattern, pass null to action listener's method
+                                new OpenTaskCreatorAction(appEnv, this.getSelectedItem().getTaskItem().getId())
+                                        .actionPerformed(null);
+                                break;
+                            }
+                            case 'n': {
+                                // TODO: Bad pattern, pass null to action listener's method
+                                new OpenTaskCreatorAction(appEnv)
+                                        .actionPerformed(null);
                                 break;
                             }
                         }
@@ -129,8 +141,9 @@ public class TaskList extends JList<TaskItemComponent> {
                     }
                 });
 
-        this.getInputMap().put(KeyStroke.getKeyStroke('n'), "createNewTask");
-        this.getActionMap().put("createNewTask", new OpenTaskCreatorAction(appEnv));
+        // this.getInputMap().put(KeyStroke.getKeyStroke('n'), "createNewTask");
+        // this.getActionMap().put("createNewTask", new OpenTaskCreatorAction(appEnv,
+        // this.getSelectedC));
 
     }
 

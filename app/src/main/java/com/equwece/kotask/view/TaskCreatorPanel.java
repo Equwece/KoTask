@@ -1,7 +1,11 @@
 package com.equwece.kotask.view;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -13,10 +17,14 @@ import javax.swing.JTextField;
 
 import com.equwece.kotask.AppEnv;
 import com.equwece.kotask.controller.SaveTaskAction;
+import com.equwece.kotask.controller.TaskController;
+import com.equwece.kotask.data.TaskItem;
+import com.equwece.kotask.data.TaskItem.TaskStatus;
 
 import net.miginfocom.swing.MigLayout;
 
 public class TaskCreatorPanel extends JDialog {
+
 
     abstract class TaskCreatorKeyAdapter extends KeyAdapter {
         private final JTextField headLineInput;
@@ -31,8 +39,7 @@ public class TaskCreatorPanel extends JDialog {
         public void keyTyped(KeyEvent event) {
             switch (event.getKeyChar()) {
                 case '\n': {
-                    new SaveTaskAction(appEnv, headLineInput, descriptionInput, TaskCreatorPanel.this)
-                            .actionPerformed(null);
+                    buildTaskAndSave(headLineInput, descriptionInput, null);
                     break;
                 }
                 case KeyEvent.VK_ESCAPE: {
@@ -45,10 +52,16 @@ public class TaskCreatorPanel extends JDialog {
     }
 
     final private AppEnv appEnv;
+    final private UUID ascendantTaskId;
 
     public TaskCreatorPanel(String frameName, AppEnv appEnv) {
+        this(frameName, appEnv, TaskController.ROOT_TASK_ID);
+    }
+
+    public TaskCreatorPanel(String frameName, AppEnv appEnv, UUID rootTaskId) {
         super(appEnv.getAppWindow());
         this.appEnv = appEnv;
+        this.ascendantTaskId = rootTaskId;
 
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setModalityType(ModalityType.APPLICATION_MODAL);
@@ -90,7 +103,9 @@ public class TaskCreatorPanel extends JDialog {
 
         JPanel buttonContainer = new JPanel();
         JButton saveTask = new JButton("Save");
-        saveTask.addActionListener(new SaveTaskAction(appEnv, headLineInput, descriptionInput, this));
+        saveTask.addActionListener(e -> {
+            buildTaskAndSave(headLineInput, descriptionInput, e);
+        });
         JButton cancelCreation = new JButton("Cancel");
         cancelCreation.addActionListener(event -> {
             this.dispose();
@@ -103,6 +118,19 @@ public class TaskCreatorPanel extends JDialog {
         this.getContentPane().add(buttonContainer);
 
         return this;
+    }
+
+    private void buildTaskAndSave(JTextField headLineInput, JTextArea descriptionInput, ActionEvent e) {
+        if (headLineInput.getText() != null) {
+            TaskItem newItem = new TaskItem(
+                    headLineInput.getText(),
+                    UUID.randomUUID(),
+                    Optional.of(descriptionInput.getText()),
+                    TaskStatus.ACTIVE,
+                    LocalDateTime.now());
+            new SaveTaskAction(appEnv, newItem, this.ascendantTaskId).actionPerformed(e);
+            TaskCreatorPanel.this.dispose();
+        }
     }
 
 }

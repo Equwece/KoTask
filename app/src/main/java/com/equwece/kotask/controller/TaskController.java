@@ -11,6 +11,9 @@ import com.equwece.kotask.data.TaskDao;
 import com.equwece.kotask.data.TaskItem;
 
 final public class TaskController {
+
+    public static final UUID ROOT_TASK_ID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+
     final private TaskDao taskDao;
     final private TagDao tagDao;
 
@@ -29,7 +32,7 @@ final public class TaskController {
 
     public List<TaskItem> getAllItems() {
         List<TaskItem> firstLevelTasks = this.getTaskDao()
-                .getTaskSubtasks(UUID.fromString("00000000-0000-0000-0000-000000000000")).stream()
+                .getTaskSubtasks(TaskController.ROOT_TASK_ID).stream()
                 .map(this::finishTaskItem).collect(Collectors.toList());
         ;
         return firstLevelTasks;
@@ -43,7 +46,7 @@ final public class TaskController {
     }
 
     public void createItem(TaskItem item) {
-        this.createItem(item, UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        this.createItem(item, TaskController.ROOT_TASK_ID);
     }
 
     public void createItem(TaskItem item, UUID ascendantId) {

@@ -39,7 +39,7 @@ final public class SqliteTagDao implements TagDao {
 
     @Override
     public void create(Tag tag) {
-        int tagColorRgb = tag.getColor().orElse(Color.GREEN).getRGB();
+        int tagColorRgb = tag.getColor().orElse(Color.decode("#d08770")).getRGB();
         this.jdbi.withHandle(handle -> {
             return handle.createUpdate(
                     "INSERT INTO \"tag\" (title, color) "

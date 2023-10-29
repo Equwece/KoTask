@@ -66,7 +66,7 @@ final public class TaskItem {
         List<Tag> listMatches = new ArrayList<Tag>();
 
         while (matcher.find()) {
-            Tag newTag = new Tag(Optional.of(Color.GREEN), matcher.group().replace("+", ""));
+            Tag newTag = new Tag(Optional.of(Color.decode("#ebcb8b")), matcher.group().replace("+", ""));
             listMatches.add(newTag);
         }
         return listMatches;
