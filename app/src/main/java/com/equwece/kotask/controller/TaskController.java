@@ -3,6 +3,7 @@ package com.equwece.kotask.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.equwece.kotask.data.Tag;
@@ -92,4 +93,5 @@ final public class TaskController {
     public void deleteItem(UUID itemId) {
         this.getTaskDao().delete(itemId);
     }
+
 }

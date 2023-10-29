@@ -4,16 +4,15 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
+import java.util.function.Predicate;
 
 import javax.swing.JList;
-import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-
-import org.slf4j.LoggerFactory;
 
 import com.equwece.kotask.AppEnv;
 import com.equwece.kotask.controller.DeleteTaskAction;
@@ -140,19 +139,19 @@ public class TaskList extends JList<TaskItemComponent> {
                                 e.getX(), e.getY());
                     }
                 });
-
-        // this.getInputMap().put(KeyStroke.getKeyStroke('n'), "createNewTask");
-        // this.getActionMap().put("createNewTask", new OpenTaskCreatorAction(appEnv,
-        // this.getSelectedC));
-
     }
 
     public void updateTaskList(List<TaskItem> newTaskList) {
-        sortTaskListByDate(newTaskList);
-        // TaskItemComponent[] newTaskComponents =
-        // this.constructTaskComponents(newTaskList);
         this.setListData(this.constructTaskComponentVector(newTaskList));
         this.setSelectedIndex(0);
+    }
+
+    public List<TaskItem> getListData() {
+        List<TaskItem> result = new ArrayList<>();
+        for (int i = 0; i < this.getModel().getSize(); i++) {
+            result.add(this.getModel().getElementAt(i).getTaskItem());
+        }
+        return result;
     }
 
     public void sortTaskListByDate(List<TaskItem> taskList) {
@@ -170,12 +169,20 @@ public class TaskList extends JList<TaskItemComponent> {
 
     public Vector<TaskItemComponent> constructTaskComponentVector(List<TaskItem> items) {
         Vector<TaskItemComponent> flatTaskList = new Vector<>();
-        items.forEach(t -> this.flatTaskTree(flatTaskList, t, 0));
+        items.forEach(t -> this.flattenTaskTree(flatTaskList, t, 0));
         return flatTaskList;
     }
 
-    public void flatTaskTree(Vector<TaskItemComponent> result, TaskItem task, int nestingLevel) {
+    public void flattenTaskTree(Vector<TaskItemComponent> result, TaskItem task, int nestingLevel) {
         result.add(new TaskItemComponent(task, nestingLevel));
-        task.getSubtasks().forEach(t -> this.flatTaskTree(result, t, nestingLevel + 1));
+        task.getSubtasks().forEach(t -> this.flattenTaskTree(result, t, nestingLevel + 1));
+    }
+
+    public Vector<TaskItemComponent> filterTaskComponents(Vector<TaskItemComponent> tasks,
+            Predicate<TaskItemComponent> predicate) {
+        return new Vector<>(tasks.stream().filter(predicate).map(t -> {
+            t.setNestingLevel(0);
+            return t;
+        }).toList());
     }
 }

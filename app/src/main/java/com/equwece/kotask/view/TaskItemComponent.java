@@ -17,6 +17,7 @@ import com.equwece.kotask.data.TaskItem.TaskStatus;
 
 public class TaskItemComponent extends JPanel {
     private final TaskItem taskItem;
+    private int nestingLevel;
 
     public TaskItemComponent(TaskItem taskItem) {
         this(taskItem, 0);
@@ -25,6 +26,7 @@ public class TaskItemComponent extends JPanel {
     public TaskItemComponent(TaskItem taskItem, int nestingLevel) {
         super();
         this.taskItem = taskItem;
+        this.nestingLevel = nestingLevel;
         this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
         for (int i = 0; i < nestingLevel; i++) {
@@ -55,6 +57,14 @@ public class TaskItemComponent extends JPanel {
             this.add(tagLabel);
             this.add(Box.createRigidArea(new Dimension(10, 0)));
         }
+    }
+
+    public void setNestingLevel(int nestingLevel) {
+        this.nestingLevel = nestingLevel;
+    }
+
+    public int getNestingLevel() {
+        return nestingLevel;
     }
 
     public TaskItem getTaskItem() {
